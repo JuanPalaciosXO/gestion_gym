@@ -5,15 +5,17 @@ public class Membresia {
     private int idMemb;
     private String nombre;
     private double precio;
+    private int duracionMes;
     private String descripcion;
     private boolean estado;
     
     public Membresia(){}
     
-    public Membresia(int idMemb, String nombre, double precio, String descripcion, boolean estado){
+    public Membresia(int idMemb, String nombre, double precio, int duracionMes, String descripcion, boolean estado){
         this.idMemb = idMemb;
         this.nombre = nombre;
         this.precio = precio;
+        this.duracionMes = duracionMes;
         this.descripcion = descripcion;
         this.estado = estado;
     }
@@ -40,6 +42,14 @@ public class Membresia {
     
     public void setPrecio(double precio){
         this.precio = precio;
+    }
+    
+    public int getDuracionmes(){
+        return this.duracionMes;
+    }
+    
+    public void setDuracionMes(int duracionMes){
+        this.duracionMes = duracionMes;
     }
     
     public String getDescripcion(){
