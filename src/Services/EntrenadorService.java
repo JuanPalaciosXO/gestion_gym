@@ -1,22 +1,32 @@
-
 package Services;
+
+import Models.Entrenador;
+import Repositories.EntrenadorRepository;
+import java.util.List;
 
 import Models.Entrenador;
 
 public class EntrenadorService {
-    public void Guardar(Entrenador entrenador){
-        System.out.println("Entrenador guardado: " + entrenador.getNombre());
+
+    private EntrenadorRepository repository;
+
+    public EntrenadorService() {
+        this.repository = new EntrenadorRepository();
     }
-    
-    public void Actualizar(Entrenador entrenador){
-        System.out.println("Entrenador actualiado: " + entrenador.getNombre());
+
+    public boolean Guardar(Entrenador entrenador) {
+        return repository.Insertar(entrenador);
     }
-    
-    public void Eliminar(int idEntrenador){
-        System.out.println("ENtrenador elimiando con ID: " + idEntrenador);
+
+    public List<Entrenador> Listar() {
+        return repository.Traer();
     }
-    
-    public void Listar(){
-        System.out.println("Listado de entrenadores");
+
+    public boolean Actualizar(Entrenador entrenador) {
+        return repository.Actualizar(entrenador);
+    }
+
+    public boolean Eliminar(int idEntrenador) {
+        return repository.Eliminar(idEntrenador);
     }
 }

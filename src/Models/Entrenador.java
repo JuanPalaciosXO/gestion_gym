@@ -1,7 +1,7 @@
-
 package Models;
 
 public class Entrenador {
+
     private int idEntrenador;
     private String nombre;
     private String documento;
@@ -10,9 +10,10 @@ public class Entrenador {
     private String especialidad;
     private boolean estado;
 
-public Entrenador(){}
+    public Entrenador() {
+    }
 
-public Entrenador(int idUsuario, String nombre, String documento, String telefono, String correo, String especialidad, boolean estado){
+    public Entrenador(int idEntrenador, String nombre, String documento, String telefono, String correo, String especialidad, boolean estado) {
         this.idEntrenador = idEntrenador;
         this.nombre = nombre;
         this.documento = documento;
@@ -78,7 +79,4 @@ public Entrenador(int idUsuario, String nombre, String documento, String telefon
         this.estado = estado;
     }
 
-
-
 }
-

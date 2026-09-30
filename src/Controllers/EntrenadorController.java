@@ -1,48 +1,56 @@
-
 package Controllers;
 
 import Models.Entrenador;
 import Services.EntrenadorService;
+import java.util.List;
 
 public class EntrenadorController {
-    
+
     private EntrenadorService entrenadorService;
-    
-    public EntrenadorController(){
-        entrenadorService = new EntrenadorService();
+
+    public EntrenadorController() {
+        this.entrenadorService = new EntrenadorService();
     }
-    
-    public void Guardar(int idEntrenador, String nombre, String documento, String telefono, String correo, String especialidad, boolean estado){
+
+    public boolean Guardar(int idEntrenador, String nombre,
+            String documento, String telefono, String correo,
+            String especialidad, boolean estado) {
+
         Entrenador entrenador = new Entrenador(
-            idEntrenador,
-            nombre,
-            documento,
-            telefono,
-            correo,
-            especialidad,
-            estado
+                idEntrenador,
+                nombre,
+                documento,
+                telefono,
+                correo,
+                especialidad,
+                estado
         );
-        entrenadorService.Guardar(entrenador);
+
+        return entrenadorService.Guardar(entrenador);
     }
-    
-    public void Actualizar(int idEntrenador, String nombre, String documento, String telefono, String correo, String especialidad, boolean estado){
+
+    public List<Entrenador> Listar() {
+        return entrenadorService.Listar();
+    }
+
+    public boolean Actualizar(int idEntrenador, String nombre,
+            String documento, String telefono, String correo,
+            String especialidad, boolean estado) {
+
         Entrenador entrenador = new Entrenador(
-            idEntrenador,
-            nombre,
-            documento,
-            telefono,
-            correo,
-            especialidad,
-            estado
+                idEntrenador,
+                nombre,
+                documento,
+                telefono,
+                correo,
+                especialidad,
+                estado
         );
-        entrenadorService.Actualizar(entrenador);
+
+        return entrenadorService.Actualizar(entrenador);
     }
-    
-    public void Eliminar(int idEntrenador){
-        entrenadorService.Eliminar(idEntrenador);
-    }
-    
-    public void Listar(){
-        entrenadorService.Listar();
+
+    public boolean Eliminar(int idEntrenador) {
+        return entrenadorService.Eliminar(idEntrenador);
     }
 }

@@ -1,23 +1,30 @@
-
 package Services;
 
 import Models.Usuario;
+import Repositories.UsuarioRepository;
+import java.util.List;
 
 public class UsuarioService {
-    
-    public void Guardar(Usuario usuario){
-        System.out.println("Usuario guardado: " + usuario.getNombre());
+
+    private UsuarioRepository repository;
+
+    public UsuarioService() {
+        this.repository = new UsuarioRepository();
     }
-    
-    public void Actualizar(Usuario usuario){
-        System.out.println("Usuario actualiado: " + usuario.getNombre());
+
+    public boolean Guardar(Usuario usuario) {
+        return repository.Insertar(usuario);
     }
-    
-    public void Eliminar(int idUsuario){
-        System.out.println("Usuario elimiando con ID: " + idUsuario);
+
+    public List<Usuario> Listar() {
+        return repository.Traer();
     }
-    
-    public void Listar(){
-        System.out.println("Listado de usuarios");
+
+    public boolean Actualizar(Usuario usuario) {
+        return repository.Actualizar(usuario);
+    }
+
+    public boolean Eliminar(int idUsuario) {
+        return repository.Eliminar(idUsuario);
     }
 }

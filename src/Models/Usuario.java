@@ -1,11 +1,10 @@
-
 package Models;
 
 import java.time.LocalDate;
 import java.util.List;
 
-
 public class Usuario {
+
     private int idUsuario;
     private String nombre;
     private String documento;
@@ -14,10 +13,11 @@ public class Usuario {
     private LocalDate fechaNacimiento;
     private boolean estado;
     private List<Rutina> rutinas;
-    
-    public Usuario (){}
-    
-    public Usuario(int idUsuario, String nombre, String documento, String telefono, String correo, LocalDate fechaNacimiento; boolean estado; List<Rutina> rutinas){
+
+    public Usuario() {
+    }
+
+    public Usuario(int idUsuario, String nombre, String documento, String telefono, String correo, LocalDate fechaNacimiento, boolean estado, List<Rutina> rutinas) {
         this.idUsuario = idUsuario;
         this.nombre = nombre;
         this.documento = documento;
@@ -92,17 +92,8 @@ public class Usuario {
         this.rutinas = rutinas;
     }
 
-    public List<Rutina> getRutinas() {
-        return rutinas;
-    }
-
-    public void setRutinas(List<Rutina> rutinas) {
-        this.rutinas = rutinas;
-    }
-    
-    
-    public void agregarRutina(Rutina rutina){
+    public void agregarRutina(Rutina rutina) {
         rutinas.add(rutina);
     }
-    
+
 }
