@@ -5,21 +5,21 @@ import Services.RutinaService;
 
 public class RutinaController {
 
-    private RutinaService rutinaService = new RutinaService();
+    private  RutinaService rutinaService = new RutinaService();
 
     public boolean Guardar(Rutina rutina) {
-        return rutinaService.Guardar(rutina);
+        return rutinaService.guardar(rutina);
     }
 
     public boolean Actualizar(Rutina rutina) {
-        return rutinaService.Actualizar(rutina);
+        return rutinaService.actualizar(rutina);
     }
 
-    public boolean Eliminar(int id) {
-        return rutinaService.Eliminar(id);
+    public boolean Eliminar(Rutina rutina) {
+        return rutinaService.eliminar(rutina);
     }
 
     public Rutina ConsultarPorId(int id) {
-        return rutinaService.ConsultarPorId(id);
+        return rutinaService.consultarId(id);
     }
 }
