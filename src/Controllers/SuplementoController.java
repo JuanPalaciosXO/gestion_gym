@@ -22,7 +22,7 @@ public class SuplementoController {
     }
     
     public boolean Eliminar(int idSu){
-        return this.Eliminar(idSu);
+        return this.service.Eliminar(idSu);
     }
     
     public Suplemento consultarPorId(int id) {

@@ -23,7 +23,7 @@ public class MaquinaController {
     }
     
     public boolean Eliminar(int idMn){
-        return this.Eliminar(idMn);
+        return this.service.Eliminar(idMn);
     }
     
     public Maquina consultarPorId(int id) {
