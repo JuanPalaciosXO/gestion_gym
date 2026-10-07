@@ -19,5 +19,39 @@ public class MembRepository {
     public List<Membresia> Consultar(){
         return this.lstMemb;
     }
+    
+    public boolean Insertar(Membresia membresia){
+        this.lstMemb.add(membresia);
+        return true;
+    }
+    
+    public boolean Actualizar(Membresia membresia) {
+    for (int i = 0; i < lstMemb.size(); i++) {
+        if (lstMemb.get(i).getIdMemb() == membresia.getIdMemb()) {
+            lstMemb.set(i, membresia);
+            return true;
+        }
+    }
+        return false;
+    }
+    
+    public boolean Eliminar(int idMemb) {
+    for (int i = 0; i < lstMemb.size(); i++) {
+        if (lstMemb.get(i).getIdMemb() == idMemb) {
+            lstMemb.remove(i);
+            return true;
+        }
+    }
+        return false;
+    }
+    
+    public Membresia ConsultarPorId(int idMemb) {
+    for (int i = 0; i < lstMemb.size(); i++) {
+        if (lstMemb.get(i).getIdMemb() == idMemb) {
+            return lstMemb.get(i);
+        }
+    }
+        return null;
+    }
    
 }

@@ -13,23 +13,22 @@ public class MembresiaService {
     }
     
     public boolean Guardar(Membresia membresia){
-        System.out.println("Se ha guardado exitosamente la membresia");
-        return true;
+        System.out.println("El tipo de membresia se ha guardado exitosamente");
+        return this.repository.Insertar(membresia);
     }
     
     public boolean Actualizar(Membresia membresia){
-        System.out.println("Se actualizo correctamente");
-        return true;
+        System.out.println("La membresia se ha actualizado exitosamente");
+        return this.repository.Actualizar(membresia);
     }
     
-    public boolean Eliminar(int id){
-        System.out.println("Se elimino exitosamente");
-        return true;
+    public boolean Eliminar(int idMemb){
+        System.out.println("El tipo de membresia se ha eliminado exitosamente");
+        return this.repository.Eliminar(idMemb);
     }
     
-    public Membresia ConsultarPorId(int id){
-        System.out.println("Consultadi membresia de " + id);
-        return null;
+    public Membresia ConsultarPorId(int idMemb){
+        return this.repository.ConsultarPorId(idMemb);
     }
     
     public List<Membresia> Listar(){

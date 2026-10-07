@@ -15,17 +15,21 @@ public class PagoService {
     
     public boolean Guardar(Pago pago){
         System.out.println("El pago se ha guardado exitosamente");
-        return true;
+        return this.repository.Insertar(pago);
     }
     
     public boolean Actualizar(Pago pago){
         System.out.println("Se actualizó correctamente");
-        return true;
+        return this.repository.Actualizar(pago);
     }
     
-    public boolean Eliminar(int id){
+    public boolean Eliminar(int idPago){
         System.out.println("Se elimino correctamente");
-        return true;
+        return this.repository.Eliminar(idPago);
+    }
+    
+    public Pago ConsultarPorId(int idPago){
+        return this.repository.ConsultarPorId(idPago);
     }
     
     public List<Pago> Listar(){

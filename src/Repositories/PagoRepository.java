@@ -19,4 +19,38 @@ public class PagoRepository {
     public List<Pago> Consultar(){
         return this.lstPagos;
     }
+    
+    public boolean Insertar(Pago pago){
+        this.lstPagos.add(pago);
+        return true;
+    }
+    
+    public boolean Actualizar(Pago pago) {
+    for (int i = 0; i < lstPagos.size(); i++) {
+        if (lstPagos.get(i).getIdPago()== pago.getIdPago()) {
+            lstPagos.set(i, pago);
+            return true;
+        }
+    }
+        return false;
+    }
+    
+    public boolean Eliminar(int idPago) {
+    for (int i = 0; i < lstPagos.size(); i++) {
+        if (lstPagos.get(i).getIdPago()== idPago) {
+            lstPagos.remove(i);
+            return true;
+        }
+    }
+        return false;
+    }
+    
+    public Pago ConsultarPorId(int idPago) {
+    for (int i = 0; i < lstPagos.size(); i++) {
+        if (lstPagos.get(i).getIdPago() == idPago) {
+            return lstPagos.get(i);
+        }
+    }
+        return null;
+    }
 }
