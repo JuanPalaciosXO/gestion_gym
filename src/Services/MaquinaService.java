@@ -8,23 +8,27 @@ public class MaquinaService {
     
     private MaquinaRepository repository;
     
-    public boolean Guardar(Maquina maquina){
-        System.out.println("La maquina se guardo");
-        return true;
+    public MaquinaService() {
+        this.repository = new MaquinaRepository();
+    }
+
+    public boolean Guardar(Maquina maquina) {
+    return this.repository.Insertar(maquina);
+}
+
+    public boolean Actualizar(Maquina maquina) {
+    return this.repository.Actualizar(maquina);
+    }
+
+    public boolean Eliminar(int idMn) {
+        return this.repository.Eliminar(idMn);
     }
     
-    
-    public boolean Actualizar(Maquina maquina){
-        System.out.println("La maquina se actualizo");
-        return true;
+    public Maquina ConsultarPorId(int idMn) {
+    return this.repository.ConsultarPorId(idMn);
     }
-    
-    public boolean Eliminar(int idMn){
-        System.out.println("Se elimino la maquina");
-        return true;
-    }
-    
-    public List<Maquina> Listar(){
-        return repository.Traer();
+
+    public List<Maquina> Listar() {
+        return this.repository.Traer();
     }
 }

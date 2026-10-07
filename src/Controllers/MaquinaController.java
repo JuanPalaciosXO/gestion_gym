@@ -18,12 +18,16 @@ public class MaquinaController {
         return this.service.Guardar(maquina);
     }
     
-    public boolean Actualizar(Maquina maquina){
-        return this.Actualizar(maquina);
+    public boolean Actualizar(Maquina maquina) {
+        return this.service.Actualizar(maquina);
     }
     
     public boolean Eliminar(int idMn){
         return this.Eliminar(idMn);
+    }
+    
+    public Maquina consultarPorId(int id) {
+    return this.service.ConsultarPorId(id);
     }
     
     public List<Maquina> Listar(){

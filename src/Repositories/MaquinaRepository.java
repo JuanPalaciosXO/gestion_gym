@@ -25,4 +25,32 @@ public class MaquinaRepository {
         this.lstMaquina.add(maquina);
         return true;
     }
+    public boolean Actualizar(Maquina maquina) {
+    for (int i = 0; i < lstMaquina.size(); i++) {
+        if (lstMaquina.get(i).getIdMn() == maquina.getIdMn()) {
+            lstMaquina.set(i, maquina);
+            return true;
+        }
+    }
+    return false;
+    }
+    
+    public boolean Eliminar(int idMn) {
+    for (int i = 0; i < lstMaquina.size(); i++) {
+        if (lstMaquina.get(i).getIdMn() == idMn) {
+            lstMaquina.remove(i);
+            return true;
+        }
+    }
+    return false;
+    }
+    
+    public Maquina ConsultarPorId(int idMn) {
+    for (int i = 0; i < lstMaquina.size(); i++) {
+        if (lstMaquina.get(i).getIdMn() == idMn) {
+            return lstMaquina.get(i);
+        }
+    }
+    return null;
+    }
 }

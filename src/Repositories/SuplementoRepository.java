@@ -24,4 +24,31 @@ public class SuplementoRepository {
         this.lsSuplemento.add(suplemento);
         return true;
     }
+    public boolean Actualizar(Suplemento suplemento) {
+    for (int i = 0; i < lsSuplemento.size(); i++) {
+        if (lsSuplemento.get(i).getIdSu() == suplemento.getIdSu()) {
+            lsSuplemento.set(i, suplemento);
+            return true;
+        }
+    }
+    return false;
+    }
+    public boolean Eliminar(int idSu) {
+    for (int i = 0; i < lsSuplemento.size(); i++) {
+        if (lsSuplemento.get(i).getIdSu() == idSu) {
+            lsSuplemento.remove(i);
+            return true;
+        }
+    }
+    return false;
+    }
+    
+    public Suplemento ConsultarPorId(int idSu) {
+    for (int i = 0; i < lsSuplemento.size(); i++) {
+        if (lsSuplemento.get(i).getIdSu() == idSu) {
+            return lsSuplemento.get(i);
+        }
+    }
+    return null;
+    }
 }

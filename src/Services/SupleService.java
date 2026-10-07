@@ -8,24 +8,29 @@ import java.util.List;
 public class SupleService {
     
     private SuplementoRepository repository;
+    
+    public SupleService() {
+        this.repository = new SuplementoRepository();
+    }
             
-    public boolean Guardar(Suplemento suplementos){
-        System.out.println("Se guardo el suplemento");
-        return true;
+    public boolean Guardar(Suplemento suplemento) {
+    return this.repository.Insertar(suplemento);
+}
+
+    public boolean Actualizar(Suplemento suplemento) {
+        return this.repository.Actualizar(suplemento);
+    }
+
+    public boolean Eliminar(int idSu) {
+        return this.repository.Eliminar(idSu);
     }
     
-    public boolean Actualizar(Suplemento suplementos){
-        System.out.println("Se actualizo el suplemento");
-        return true;
+    public Suplemento ConsultarPorId(int idSu) {
+        return this.repository.ConsultarPorId(idSu);
     }
-    
-    public boolean Eliminar (int idSu){
-        System.out.println("Se elimino el suplemento");
-        return true;
-    }
-    
-    public List<Suplemento> Listar(){
-        return repository.Traer();
+
+    public List<Suplemento> Listar() {
+        return this.repository.Traer();
     }
 
 }

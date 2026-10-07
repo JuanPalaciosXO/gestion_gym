@@ -17,12 +17,16 @@ public class SuplementoController {
         Suplemento suplemento = new Suplemento(idSu,  nombre,  marca,  precio,  stock,  descripcion,  estado);
         return this.service.Guardar(suplemento);
     }
-    public boolean Actualizar(Suplemento suplemento){
-        return this.Actualizar(suplemento);
+    public boolean Actualizar(Suplemento suplemento) {
+        return this.service.Actualizar(suplemento);
     }
     
     public boolean Eliminar(int idSu){
         return this.Eliminar(idSu);
+    }
+    
+    public Suplemento consultarPorId(int id) {
+        return this.service.ConsultarPorId(id);
     }
     
     public List<Suplemento> Listar(){
