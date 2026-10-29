@@ -24,9 +24,9 @@ public class EjercicioRepository {
         return false;
     }
 
-    public boolean Eliminar(int id) {
+    public boolean Eliminar(int idEjercicio) {
         for (int i = 0; i < ejercicios.size(); i++) {
-            if (ejercicios.get(i).getId() == id) {
+            if (ejercicios.get(i).getId() == idEjercicio) {
                 ejercicios.remove(i);
                 return true;
             }
@@ -35,9 +35,9 @@ public class EjercicioRepository {
         return false;
     }
 
-    public Ejercicio ConsultarPorId(int id) {
+    public Ejercicio ConsultarPorId(int idEjercicio) {
         for (int i = 0; i < ejercicios.size(); i++) {
-            if (ejercicios.get(i).getId() == id) {
+            if (ejercicios.get(i).getId() == idEjercicio) {
                 return ejercicios.get(i);
             }
         }

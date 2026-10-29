@@ -15,11 +15,11 @@ public class RutinaController {
         return rutinaService.actualizar(rutina);
     }
 
-    public boolean Eliminar(Rutina rutina) {
-        return rutinaService.eliminar(rutina);
+    public boolean Eliminar(int idRutina) {
+        return rutinaService.eliminar(idRutina);
     }
 
-    public Rutina ConsultarPorId(int id) {
-        return rutinaService.consultarId(id);
+    public Rutina ConsultarPorId(int idRutina) {
+        return rutinaService.consultarId(idRutina);
     }
 }

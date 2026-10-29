@@ -16,8 +16,8 @@ public class EjercicioController {
          return ejercicioService.actualizar(ejercicio );
     }
     
-    public boolean eliminar (Ejercicio ejercicio){
-         return ejercicioService.eliminar(ejercicio);
+    public boolean eliminar (int idEjercicio){
+         return ejercicioService.eliminar(idEjercicio);
     }
     public Ejercicio consultarPorId(int id){
          return ejercicioService.consultarId(id);

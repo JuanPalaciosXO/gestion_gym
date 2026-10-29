@@ -29,10 +29,21 @@ public class RutinaRepository {
        return false;
     }
     
-    
-    public Rutina ConsultarPorId(int id) {
+        public boolean Eliminar(int idRutina) {
         for (int i = 0; i < rutinas.size(); i++) {
-            if (rutinas.get(i).getId() == id) {
+            if (rutinas.get(i).getId() == idRutina) {
+                rutinas.remove(i);
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
+    
+    public Rutina ConsultarPorId(int idRutina) {
+        for (int i = 0; i < rutinas.size(); i++) {
+            if (rutinas.get(i).getId() == idRutina) {
                 return rutinas.get(i);
             }
         }

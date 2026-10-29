@@ -4,7 +4,7 @@ package Models;
 
  public class Ejercicio {
     
-     private int id ;
+     private int idEjercicio ;
      private String nombre; 
      private String tipoMuscular; 
      private int series; 
@@ -14,9 +14,9 @@ package Models;
      
      public Ejercicio(){}
      
-     public Ejercicio (int id, String nombre, String tipoMuscular, int series, int repeticiones, int duracion, boolean estado){
+     public Ejercicio (int idEjercicio, String nombre, String tipoMuscular, int series, int repeticiones, int duracion, boolean estado){
      
-      this.id = id ; 
+      this.idEjercicio = idEjercicio ; 
       this.nombre = nombre; 
       this.tipoMuscular = tipoMuscular; 
       this.series = series; 
@@ -27,11 +27,11 @@ package Models;
      }
 
     public int getId() {
-        return id;
+        return idEjercicio;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.idEjercicio = idEjercicio;
     }
 
     public String getNombre() {

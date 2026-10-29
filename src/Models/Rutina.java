@@ -7,7 +7,7 @@ package Models;
  */
 public class Rutina {
     
-    private int id; 
+    private int idRutina; 
     private String nombre; 
     private String objetivo;
     private String nivel; 
@@ -16,9 +16,9 @@ public class Rutina {
     
     public Rutina(){}
     
-    public Rutina (int id, String nombre, String objetivo,String nivel, String descripcion, boolean estado){
+    public Rutina (int idRutina, String nombre, String objetivo,String nivel, String descripcion, boolean estado){
         
-        this.id = id; 
+        this.idRutina = idRutina; 
         this.nombre = nombre; 
         this.objetivo = objetivo; 
         this.nivel = nivel;
@@ -28,11 +28,11 @@ public class Rutina {
     }
 
     public int getId() {
-        return id;
+        return idRutina;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.idRutina = id;
     }
 
     public String getNombre() {
