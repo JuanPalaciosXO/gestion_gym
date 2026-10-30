@@ -1,9 +1,13 @@
-/*
+
 import Controllers.EntrenadorController;
 import Controllers.UsuarioController;
+import Controllers.MembController;
+import Controllers.PagoController;
 import Models.Usuario;
 import Models.Entrenador;
 import Models.Rutina;
+import Models.Membresia;
+import Models.Pago;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +17,8 @@ public class Main {
     public static void main(String[] args) {
 
         UsuarioController usuarioController = new UsuarioController();
+        
+        PagoController pagos = new PagoController();
 
         List<Rutina> rutinas1 = new ArrayList<>();
         List<Rutina> rutinas2 = new ArrayList<>();
@@ -82,5 +88,8 @@ public class Main {
                     + " | Especialidad: " + entrenador.getEspecialidad()
             );
         }
+        
+        MembController membresia = new MembController();
+        List<Membresia> memb1 = membresia.Listar();
     }
-}*/
+}
