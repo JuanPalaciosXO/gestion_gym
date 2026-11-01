@@ -12,16 +12,32 @@ public class SupleService {
     public SupleService() {
         this.repository = new SuplementoRepository();
     }
+    
+    private boolean existe(int idSu) {
+        return this.repository.ConsultarPorId(idSu) != null;
+    }
             
     public boolean Guardar(Suplemento suplemento) {
-    return this.repository.Insertar(suplemento);
-}
+        if (suplemento == null) {
+            throw new IllegalArgumentException("El suplemento no puede ser nulo.");
+        }
+        if (existe(suplemento.getIdSu())) {
+            throw new IllegalArgumentException("Ya existe un suplemento con ese ID.");
+        }
+        return this.repository.Insertar(suplemento);
+    }
 
     public boolean Actualizar(Suplemento suplemento) {
+        if (!existe(suplemento.getIdSu())) {
+            throw new IllegalArgumentException("No se puede actualizar: No existe un suplemento con ese ID.");
+        }
         return this.repository.Actualizar(suplemento);
     }
 
     public boolean Eliminar(int idSu) {
+        if (!existe(idSu)) {
+            throw new IllegalArgumentException("No se puede eliminar: El ID especificado no existe.");
+        }
         return this.repository.Eliminar(idSu);
     }
     
