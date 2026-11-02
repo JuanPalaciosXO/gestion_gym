@@ -1,56 +1,152 @@
 
 package Repositories;
+ 
+import DB.Database;
 import Models.Pago;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.LocalDate;
-
+ 
 public class PagoRepository {
-    private List<Pago> lstPagos;
-    
-    public PagoRepository(){
-        this.lstPagos = new ArrayList<>();
-        Pago juanLopez = new Pago(1, LocalDate.of(2026, 9, 23), 150000, "Efectivo", true, 1, 1);
-        Pago sebasrojas = new Pago(1, LocalDate.of(2026, 7, 7), 150000, "Efectivo", true, 1, 1);
-        this.lstPagos.add(juanLopez);
-        this.lstPagos.add(sebasrojas);
+ 
+    private Pago construir(ResultSet rs) throws SQLException {
+        return new Pago(
+                rs.getInt("idPago"),
+                rs.getDate("fecha").toLocalDate(),
+                rs.getInt("valor"),
+                rs.getString("metodo_pago"),
+                rs.getBoolean("estado"),
+                rs.getInt("idUsuario"),
+                rs.getInt("idMemb")
+        );
     }
-    
-    public List<Pago> Consultar(){
-        return this.lstPagos;
+ 
+    public List<Pago> Consultar() {
+        List<Pago> lista = new ArrayList<>();
+        Connection conexion = Database.conectar();
+        if (conexion == null) {
+            return lista;
+        }
+        String sql = "SELECT idPago, fecha, valor, metodo_pago, estado, idUsuario, idMemb FROM pago";
+ 
+        try (PreparedStatement stmt = conexion.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+ 
+            while (rs.next()) {
+                lista.add(construir(rs));
+            }
+ 
+        } catch (SQLException e) {
+            System.out.println("Error al listar pagos: " + e.getMessage());
+        } finally {
+            Database.desconectar(conexion);
+        }
+        return lista;
     }
-    
-    public boolean Insertar(Pago pago){
-        this.lstPagos.add(pago);
-        return true;
+ 
+    public boolean Insertar(Pago pago) {
+        Connection conexion = Database.conectar();
+        if (conexion == null) {
+            return false;
+        }
+        String sql = "INSERT INTO pago (idPago, fecha, valor, metodo_pago, estado, idUsuario, idMemb) "
+                   + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+ 
+        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+ 
+            stmt.setInt(1, pago.getIdPago());
+            stmt.setDate(2, Date.valueOf(pago.getFecha()));
+            stmt.setInt(3, pago.getValor());
+            stmt.setString(4, pago.getMetodoPago());
+            stmt.setBoolean(5, pago.isEstado());
+            stmt.setInt(6, pago.getIdUsuario());
+            stmt.setInt(7, pago.getIdMembresia());
+ 
+            return stmt.executeUpdate() > 0;
+ 
+        } catch (SQLException e) {
+            System.out.println("Error al insertar pago: " + e.getMessage());
+            return false;
+        } finally {
+            Database.desconectar(conexion);
+        }
     }
-    
+ 
     public boolean Actualizar(Pago pago) {
-    for (int i = 0; i < lstPagos.size(); i++) {
-        if (lstPagos.get(i).getIdPago()== pago.getIdPago()) {
-            lstPagos.set(i, pago);
-            return true;
+        Connection conexion = Database.conectar();
+        if (conexion == null) {
+            return false;
+        }
+        String sql = "UPDATE pago SET fecha = ?, valor = ?, metodo_pago = ?, estado = ?, "
+                   + "idUsuario = ?, idMemb = ? WHERE idPago = ?";
+ 
+        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+ 
+            stmt.setDate(1, Date.valueOf(pago.getFecha()));
+            stmt.setInt(2, pago.getValor());
+            stmt.setString(3, pago.getMetodoPago());
+            stmt.setBoolean(4, pago.isEstado());
+            stmt.setInt(5, pago.getIdUsuario());
+            stmt.setInt(6, pago.getIdMembresia());
+            stmt.setInt(7, pago.getIdPago());
+ 
+            return stmt.executeUpdate() > 0;
+ 
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar pago: " + e.getMessage());
+            return false;
+        } finally {
+            Database.desconectar(conexion);
         }
     }
-        return false;
-    }
-    
+ 
     public boolean Eliminar(int idPago) {
-    for (int i = 0; i < lstPagos.size(); i++) {
-        if (lstPagos.get(i).getIdPago()== idPago) {
-            lstPagos.remove(i);
-            return true;
+        Connection conexion = Database.conectar();
+        if (conexion == null) {
+            return false;
+        }
+        String sql = "DELETE FROM pago WHERE idPago = ?";
+ 
+        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+ 
+            stmt.setInt(1, idPago);
+            return stmt.executeUpdate() > 0;
+ 
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar pago: " + e.getMessage());
+            return false;
+        } finally {
+            Database.desconectar(conexion);
         }
     }
-        return false;
-    }
-    
+ 
     public Pago ConsultarPorId(int idPago) {
-    for (int i = 0; i < lstPagos.size(); i++) {
-        if (lstPagos.get(i).getIdPago() == idPago) {
-            return lstPagos.get(i);
+        Connection conexion = Database.conectar();
+        if (conexion == null) {
+            return null;
         }
-    }
+        String sql = "SELECT idPago, fecha, valor, metodo_pago, estado, idUsuario, idMemb "
+                   + "FROM pago WHERE idPago = ?";
+ 
+        try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+ 
+            stmt.setInt(1, idPago);
+ 
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return construir(rs);
+                }
+            }
+ 
+        } catch (SQLException e) {
+            System.out.println("Error al buscar pago: " + e.getMessage());
+        } finally {
+            Database.desconectar(conexion);
+        }
         return null;
     }
 }
