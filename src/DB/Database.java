@@ -5,11 +5,11 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Database {
-    
-    private static final String URL = "jdbc:mysql://localhost:3306/gestion_gym";
+
+    private static final String URL = "jdbc:mysql://127.0.0.1:3307/gestion_gym";
     private static final String USUARIO = "root";
     private static final String PASSWORD = "";
-    
+
     public static Connection conectar() {
         Connection conexion = null;
         try {
@@ -26,7 +26,6 @@ public class Database {
         return conexion;
     }
 
-    // Método para cerrar la conexión a la base de datos
     public static void desconectar(Connection conexion) {
         if (conexion != null) {
             try {
@@ -37,5 +36,4 @@ public class Database {
             }
         }
     }
-    
 }

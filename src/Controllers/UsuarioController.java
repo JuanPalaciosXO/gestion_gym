@@ -14,26 +14,24 @@ public class UsuarioController {
         usuarioService = new UsuarioService();
     }
 
-    
-public boolean Guardar(int idUsuario, String nombre,
-        String documento, String telefono, String correo,
-        LocalDate fechaNacimiento, boolean estado,
-        List<Rutina> rutinas, String password) {
+    public boolean Guardar(int idUsuario, String nombre,
+            String documento, String telefono, String correo,
+            LocalDate fechaNacimiento, boolean estado,
+            List<Rutina> rutinas, String password) {
 
-    Usuario usuario = new Usuario(
-            idUsuario,
-            nombre,
-            documento,
-            telefono,
-            correo,
-            fechaNacimiento,
-            estado,
-            rutinas
-    );
+        Usuario usuario = new Usuario(
+                idUsuario,
+                nombre,
+                documento,
+                telefono,
+                correo,
+                fechaNacimiento,
+                estado,
+                rutinas
+        );
 
-    return usuarioService.Guardar(usuario, password);
-}
-
+        return usuarioService.Guardar(usuario, password);
+    }
 
     public boolean Actualizar(int idUsuario, String nombre,
             String documento, String telefono, String correo,
@@ -60,11 +58,9 @@ public boolean Guardar(int idUsuario, String nombre,
     public List<Usuario> Listar() {
         return usuarioService.Listar();
     }
-    
-public Usuario IniciarSesion(String documento, String password) {
 
-    return usuarioService.IniciarSesion(documento, password);
+    public Usuario IniciarSesion(String documento, String password) {
 
-}
-
+        return usuarioService.IniciarSesion(documento, password);
+    }
 }

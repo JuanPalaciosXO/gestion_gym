@@ -14,7 +14,6 @@ public class Usuario {
     private LocalDate fechaNacimiento;
     private boolean estado;
     private List<Rutina> rutinas;
-    
 
     public Usuario() {
     }
@@ -97,13 +96,12 @@ public class Usuario {
     public void agregarRutina(Rutina rutina) {
         rutinas.add(rutina);
     }
-    
-public String getPasswordHash() {
-    return passwordHash;
-}
 
-public void setPasswordHash(String passwordHash) {
-    this.passwordHash = passwordHash;
-}
+    public String getPasswordHash() {
+        return passwordHash;
+    }
 
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
 }
