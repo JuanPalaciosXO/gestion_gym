@@ -194,7 +194,7 @@ public class PagoListaView extends javax.swing.JFrame {
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-
+        dispose();
     }//GEN-LAST:event_btnVolverActionPerformed
 
     public static void main(String args[]) {

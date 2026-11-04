@@ -63,10 +63,11 @@ public class ejercicioView extends javax.swing.JFrame {
         btnActualizar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
+        btnVolver = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblEjercicios = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         lblTitulo.setFont(new java.awt.Font("Segoe UI", 1, 18));
         lblTitulo.setText("Gestión de Ejercicios");
@@ -107,6 +108,9 @@ public class ejercicioView extends javax.swing.JFrame {
         btnLimpiar.setText("Limpiar");
         btnLimpiar.addActionListener(this::btnLimpiarActionPerformed);
 
+        btnVolver.setText("Volver");
+        btnVolver.addActionListener(this::btnVolverActionPerformed);
+
         tblEjercicios.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null, null, null},
@@ -138,7 +142,9 @@ public class ejercicioView extends javax.swing.JFrame {
                 .addComponent(btnEliminar)
                 .addGap(18, 18, 18)
                 .addComponent(btnLimpiar)
-                .addGap(198, 198, 198))
+                .addGap(18, 18, 18)
+                .addComponent(btnVolver)
+                .addGap(110, 110, 110))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -203,7 +209,8 @@ public class ejercicioView extends javax.swing.JFrame {
                     .addComponent(btnGuardar)
                     .addComponent(btnActualizar)
                     .addComponent(btnEliminar)
-                    .addComponent(btnLimpiar))
+                    .addComponent(btnLimpiar)
+                    .addComponent(btnVolver))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32))
@@ -365,6 +372,10 @@ public class ejercicioView extends javax.swing.JFrame {
         }
     }
 
+    private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {
+        dispose();
+    }
+
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {
         txtNombre.setText("");
         txtDocumento.setText("");
@@ -389,6 +400,7 @@ public class ejercicioView extends javax.swing.JFrame {
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
+    private javax.swing.JButton btnVolver;
     private javax.swing.JCheckBox chkEstado;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblCorreo;

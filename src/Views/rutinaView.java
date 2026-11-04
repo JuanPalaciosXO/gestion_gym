@@ -60,6 +60,7 @@ public class rutinaView extends javax.swing.JFrame {
         btnEliminar = new javax.swing.JButton();
         btnBuscar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
+        btnVolver = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblRutinas = new javax.swing.JTable();
 
@@ -101,6 +102,9 @@ public class rutinaView extends javax.swing.JFrame {
 
         btnLimpiar.setText("Limpiar");
         btnLimpiar.addActionListener(this::btnLimpiarActionPerformed);
+        
+        btnVolver.setText("Volver");
+        btnVolver.addActionListener(this::btnVolverActionPerformed);
 
         tblRutinas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -135,7 +139,9 @@ public class rutinaView extends javax.swing.JFrame {
                 .addComponent(btnBuscar)
                 .addGap(18, 18, 18)
                 .addComponent(btnLimpiar)
-                .addGap(145, 145, 145))
+                .addGap(18, 18, 18))
+                .addComponent(btnVolver)
+                .addGap(110, 110, 110)    
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -199,6 +205,7 @@ public class rutinaView extends javax.swing.JFrame {
                     .addComponent(btnEliminar)
                     .addComponent(btnBuscar)
                     .addComponent(btnLimpiar))
+                    .addComponent(btnVolver)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32))
@@ -379,7 +386,7 @@ public class rutinaView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "El ID debe ser un número entero válido.");
         }
     }
-
+    
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {
         txtId.setText("");
         txtNombre.setText("");
@@ -391,6 +398,10 @@ public class rutinaView extends javax.swing.JFrame {
         tblRutinas.clearSelection();
         txtId.requestFocusInWindow();
     }
+    
+     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {
+        dispose();
+    }
 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> new rutinaView().setVisible(true));
@@ -401,6 +412,7 @@ public class rutinaView extends javax.swing.JFrame {
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
+    private javax.swing.JButton btnVolver;
     private javax.swing.JCheckBox chkEstado;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblDescripcion;

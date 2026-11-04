@@ -12,7 +12,6 @@ import java.util.List;
  
 public class MembRepository {
  
-    // Convierte la fila actual del ResultSet en un objeto Membresia
     private Membresia construir(ResultSet rs) throws SQLException {
         return new Membresia(
                 rs.getInt("idMemb"),

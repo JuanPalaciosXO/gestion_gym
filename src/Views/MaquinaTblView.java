@@ -14,8 +14,8 @@ public class MaquinaTblView extends javax.swing.JFrame {
 
     public MaquinaTblView() {
         initComponents();
+        setSize(741, 439);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         cargarMaquinas();
     }
     
@@ -171,10 +171,7 @@ public class MaquinaTblView extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        MaquinaView maquinaView = new MaquinaView();
-        maquinaView.setVisible(true);
-        
-        this.dispose();
+        dispose();
     }//GEN-LAST:event_btnVolverActionPerformed
 
     

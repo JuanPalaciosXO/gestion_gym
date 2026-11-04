@@ -1,4 +1,6 @@
+
 package Views;
+
 import Models.Suplemento;
 import Controllers.SuplementoController;
 import javax.swing.JOptionPane;
@@ -11,8 +13,8 @@ public class SuplementoTblView extends javax.swing.JFrame {
     
     public SuplementoTblView() {
         initComponents();
+        setSize(741, 439);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         cargarSuplementos();
     }
     private void cargarSuplementos() {
@@ -130,7 +132,6 @@ public class SuplementoTblView extends javax.swing.JFrame {
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
         new SuplementoView(null, this::cargarSuplementos).setVisible(true);
-        this.dispose();
     }//GEN-LAST:event_btnNuevoActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
@@ -146,7 +147,6 @@ public class SuplementoTblView extends javax.swing.JFrame {
             return;
         }
         new SuplementoView(s, this::cargarSuplementos).setVisible(true);
-        this.dispose();
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void txtEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEliminarActionPerformed
@@ -170,9 +170,7 @@ public class SuplementoTblView extends javax.swing.JFrame {
     }//GEN-LAST:event_txtEliminarActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        SuplementoView suplementoView = new SuplementoView();
-        suplementoView.setVisible(true);
-        this.dispose();
+        dispose();
     }//GEN-LAST:event_btnVolverActionPerformed
 
     /**
