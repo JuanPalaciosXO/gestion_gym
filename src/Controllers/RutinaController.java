@@ -2,10 +2,11 @@ package Controllers;
 
 import Models.Rutina;
 import Services.RutinaService;
+import java.util.ArrayList; // 
 
 public class RutinaController {
 
-    private  RutinaService rutinaService = new RutinaService();
+    private RutinaService rutinaService = new RutinaService();
 
     public boolean Guardar(Rutina rutina) {
         return rutinaService.guardar(rutina);
@@ -21,5 +22,10 @@ public class RutinaController {
 
     public Rutina ConsultarPorId(int idRutina) {
         return rutinaService.consultarId(idRutina);
+    }
+
+    
+    public ArrayList<Rutina> Listar() {
+        return rutinaService.listar();
     }
 }

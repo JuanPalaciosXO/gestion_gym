@@ -83,6 +83,8 @@ public class UsuarioView extends javax.swing.JFrame {
         lblNombre.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblNombre.setText("Nombre");
 
+        txtNombre.addActionListener(this::txtNombreActionPerformed);
+
         lblDocumento.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblDocumento.setText("Documento");
 
@@ -545,6 +547,10 @@ public class UsuarioView extends javax.swing.JFrame {
         txtNombre.requestFocusInWindow();
 
     }//GEN-LAST:event_btnLimpiarActionPerformed
+
+    private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNombreActionPerformed
 
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> new UsuarioView().setVisible(true));

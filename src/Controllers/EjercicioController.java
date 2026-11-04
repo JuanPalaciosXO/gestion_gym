@@ -3,6 +3,7 @@ package Controllers;
 
 import Models.Ejercicio;
 import Services.EjercicioService;
+import java.util.ArrayList;
 
 public class EjercicioController {
     
@@ -22,4 +23,8 @@ public class EjercicioController {
     public Ejercicio consultarPorId(int id){
          return ejercicioService.consultarId(id);
     }
+    
+    public ArrayList<Ejercicio> listar() {
+    return ejercicioService.listar();
+}
 }

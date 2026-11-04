@@ -30,9 +30,9 @@ package Models;
         return idEjercicio;
     }
 
-    public void setId(int id) {
-        this.idEjercicio = idEjercicio;
-    }
+public void setId(int id) {
+    this.idEjercicio = id;
+}
 
     public String getNombre() {
         return nombre;
