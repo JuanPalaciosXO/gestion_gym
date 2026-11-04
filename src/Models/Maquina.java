@@ -62,5 +62,5 @@ public class Maquina {
     public void setDescripcion (String descripcion){
         this.descripcion = descripcion;
     }
-    
+ 
 }

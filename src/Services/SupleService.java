@@ -21,15 +21,28 @@ public class SupleService {
         if (suplemento == null) {
             throw new IllegalArgumentException("El suplemento no puede ser nulo.");
         }
-        if (existe(suplemento.getIdSu())) {
-            throw new IllegalArgumentException("Ya existe un suplemento con ese ID.");
+        
+        for (Suplemento s : repository.Traer()) {
+            if (s.getNombre().equalsIgnoreCase(suplemento.getNombre())) {
+                System.out.println("Error: Ya existe un suplemento con ese nombre.");
+                return false;
+            }
         }
         return this.repository.Insertar(suplemento);
     }
 
     public boolean Actualizar(Suplemento suplemento) {
+        if (suplemento == null) {
+            throw new IllegalArgumentException("El suplemento no puede ser nulo.");
+        }
         if (!existe(suplemento.getIdSu())) {
             throw new IllegalArgumentException("No se puede actualizar: No existe un suplemento con ese ID.");
+        }
+        for (Suplemento s : repository.Traer()) {
+            if (s.getNombre().equalsIgnoreCase(suplemento.getNombre()) && s.getIdSu() != suplemento.getIdSu()) {
+                System.out.println("Error: Ya existe otro suplemento con ese nombre.");
+                return false;
+            }
         }
         return this.repository.Actualizar(suplemento);
     }

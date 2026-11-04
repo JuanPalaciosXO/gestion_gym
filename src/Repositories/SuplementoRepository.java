@@ -13,15 +13,17 @@ public class SuplementoRepository {
     
     public boolean Insertar(Suplemento suplemento){
         Connection conexion = Database.conectar();
-        String sql = "INSERT INTO suplemento (id, nombre, precio, stock, descripcion, estado) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO suplemento ( nombre, marca, precio, stock, descripcion, estado) VALUES (?, ?, ?, ?, ?, ?)";
         
         try (PreparedStatement stmt = conexion.prepareStatement(sql)){
-            stmt.setInt(1, suplemento.getIdSu());
-            stmt.setString(2, suplemento.getNombre());
+            
+            stmt.setString(1, suplemento.getNombre());
+            stmt.setString(2, suplemento.getMarca());
             stmt.setDouble(3, suplemento.getPrecio());
             stmt.setInt(4, suplemento.getStock());
             stmt.setString(5, suplemento.getDescripcion());
             stmt.setBoolean(6, suplemento.getEstado());
+            
             stmt.executeUpdate();
             return true;
         }catch (SQLException e){
@@ -35,15 +37,16 @@ public class SuplementoRepository {
     public List<Suplemento> Traer(){
         List<Suplemento> lista = new ArrayList<>();
         Connection conexion = Database.conectar();
-        String sql = "SELECT id, nombre, precio, stock, descripcion, estado FROM suplemento";
+        String sql = "SELECT idSu, nombre, marca, precio, stock, descripcion, estado FROM suplemento";
 
         try(PreparedStatement stmt = conexion.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Suplemento s = new Suplemento();
-                s.setIdSu(rs.getInt("id"));
+                s.setIdSu(rs.getInt("idSu"));
                 s.setNombre(rs.getString("nombre"));
+                s.setMarca(rs.getString("marca"));
                 s.setPrecio(rs.getDouble("precio"));
                 s.setStock(rs.getInt("stock"));
                 s.setDescripcion(rs.getString("descripcion"));
@@ -61,14 +64,15 @@ public class SuplementoRepository {
     public Suplemento ConsultarPorId(int idSu){
         Suplemento suplemento = null;
         Connection conexion = Database.conectar();
-        String sql = "SELECT id, nombre, precio, stock, descripcion, estado FROM suplemento WHERE id = ?";
+        String sql = "SELECT idSu, nombre, marca, precio, stock, descripcion, estado FROM suplemento WHERE idSu = ?";
 
         try(PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setInt(1, idSu);
             try(ResultSet rs = stmt.executeQuery()) {
                 if(rs.next()) {
                     suplemento = new Suplemento();
-                    suplemento.setIdSu(rs.getInt("id"));
+                    suplemento.setIdSu(rs.getInt("idSu"));
+                    suplemento.setMarca(rs.getString("marca"));
                     suplemento.setNombre(rs.getString("nombre"));
                     suplemento.setPrecio(rs.getDouble("precio"));
                     suplemento.setStock(rs.getInt("stock"));
@@ -86,15 +90,16 @@ public class SuplementoRepository {
     
     public boolean Actualizar(Suplemento suplemento) {
         Connection conexion = Database.conectar();
-        String sql = "UPDATE suplemento SET nombre = ?, precio = ?, stock = ?, descripcion = ?, estado = ? WHERE id = ?";
+        String sql = "UPDATE suplemento SET nombre = ?, marca = ?, precio = ?, stock = ?, descripcion = ?, estado = ? WHERE idSu = ?";
 
         try(PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, suplemento.getNombre());
-            stmt.setDouble(2, suplemento.getPrecio());
-            stmt.setInt(3, suplemento.getStock());
-            stmt.setString(4, suplemento.getDescripcion());
-            stmt.setBoolean(5, suplemento.getEstado());
-            stmt.setInt(6, suplemento.getIdSu());
+            stmt.setString(2, suplemento.getMarca());       
+            stmt.setDouble(3, suplemento.getPrecio());     
+            stmt.setInt(4, suplemento.getStock());         
+            stmt.setString(5, suplemento.getDescripcion()); 
+            stmt.setBoolean(6, suplemento.getEstado()); 
+            stmt.setInt(7, suplemento.getIdSu());
 
             int filas = stmt.executeUpdate();
             return filas > 0;
@@ -108,7 +113,7 @@ public class SuplementoRepository {
 
     public boolean Eliminar(int idSu) {
         Connection conexion = Database.conectar();
-        String sql = "DELETE FROM suplemento WHERE id = ?";
+        String sql = "DELETE FROM suplemento WHERE idSu = ?";
 
         try(PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setInt(1, idSu);

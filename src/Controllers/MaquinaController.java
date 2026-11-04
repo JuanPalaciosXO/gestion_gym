@@ -33,5 +33,7 @@ public class MaquinaController {
     public List<Maquina> Listar(){
         return service.Listar();
     }
+
+    
     
 }

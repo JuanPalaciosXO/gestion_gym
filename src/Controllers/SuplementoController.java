@@ -25,11 +25,13 @@ public class SuplementoController {
         return this.service.Eliminar(idSu);
     }
     
-    public Suplemento consultarPorId(int id) {
-        return this.service.ConsultarPorId(id);
+    public Suplemento consultarPorId(int idSu) {
+        return this.service.ConsultarPorId(idSu);
     }
     
     public List<Suplemento> Listar(){
         return service.Listar();
     }
+
+    
 }
