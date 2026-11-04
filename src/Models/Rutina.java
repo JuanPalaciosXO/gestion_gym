@@ -1,10 +1,6 @@
 
 package Models;
 
-/**
- *
- * @author Estudiantes
- */
 public class Rutina {
     
     private int idRutina; 

@@ -64,7 +64,7 @@ public class MembListaView extends javax.swing.JFrame {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Id", "Nombre", "Precio", "Duración", "Activo"
+                "Id", "Nombre", "Precio", "Duración", "Descripción"
             }
         ));
         jScrollPane1.setViewportView(tblMembresias);
