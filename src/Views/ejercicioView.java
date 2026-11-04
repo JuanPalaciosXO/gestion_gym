@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-public class EjercicioView extends javax.swing.JFrame {
+public class ejercicioView extends javax.swing.JFrame {
 
     private final EjercicioController ejercicioController = new EjercicioController();
     private int idEjercicioSeleccionado = 0;
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(EjercicioView.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ejercicioView.class.getName());
 
-    public EjercicioView() {
+    public ejercicioView() {
         initComponents();
         setLocationRelativeTo(null);
         cargarEjercicios();
@@ -48,14 +48,16 @@ public class EjercicioView extends javax.swing.JFrame {
         lblTitulo = new javax.swing.JLabel();
         lblNombre = new javax.swing.JLabel();
         txtNombre = new javax.swing.JTextField();
-        lblTipo = new javax.swing.JLabel();
-        txtTipo = new javax.swing.JTextField();
-        lblSeries = new javax.swing.JLabel();
-        txtSeries = new javax.swing.JTextField();
-        lblRepeticiones = new javax.swing.JLabel();
-        txtRepeticiones = new javax.swing.JTextField();
-        lblDuracion = new javax.swing.JLabel();
-        txtDuracion = new javax.swing.JTextField();
+        lblDocumento = new javax.swing.JLabel();
+        txtDocumento = new javax.swing.JTextField();
+        lblTelefono = new javax.swing.JLabel();
+        txtTelefono = new javax.swing.JTextField();
+        lblCorreo = new javax.swing.JLabel();
+        txtCorreo = new javax.swing.JTextField();
+        lblFechaNacimiento = new javax.swing.JLabel();
+        txtFechaNacimiento = new javax.swing.JTextField();
+        lblPassword = new javax.swing.JLabel();
+        txtPassword = new javax.swing.JPasswordField();
         chkEstado = new javax.swing.JCheckBox();
         btnGuardar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
@@ -64,7 +66,7 @@ public class EjercicioView extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblEjercicios = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         lblTitulo.setFont(new java.awt.Font("Segoe UI", 1, 18));
         lblTitulo.setText("Gestión de Ejercicios");
@@ -72,17 +74,22 @@ public class EjercicioView extends javax.swing.JFrame {
         lblNombre.setFont(new java.awt.Font("Segoe UI", 1, 12));
         lblNombre.setText("Nombre");
 
-        lblTipo.setFont(new java.awt.Font("Segoe UI", 1, 12));
-        lblTipo.setText("Tipo muscular");
+        txtNombre.addActionListener(this::txtNombreActionPerformed);
 
-        lblSeries.setFont(new java.awt.Font("Segoe UI", 1, 12));
-        lblSeries.setText("Series");
+        lblDocumento.setFont(new java.awt.Font("Segoe UI", 1, 12));
+        lblDocumento.setText("Tipo muscular");
 
-        lblRepeticiones.setFont(new java.awt.Font("Segoe UI", 1, 12));
-        lblRepeticiones.setText("Repeticiones");
+        lblTelefono.setFont(new java.awt.Font("Segoe UI", 1, 12));
+        lblTelefono.setText("Series");
 
-        lblDuracion.setFont(new java.awt.Font("Segoe UI", 1, 12));
-        lblDuracion.setText("Duración (min)");
+        lblCorreo.setFont(new java.awt.Font("Segoe UI", 1, 12));
+        lblCorreo.setText("Repeticiones");
+
+        lblFechaNacimiento.setFont(new java.awt.Font("Segoe UI", 1, 12));
+        lblFechaNacimiento.setText("Duración");
+
+        lblPassword.setFont(new java.awt.Font("Segoe UI", 1, 12));
+        lblPassword.setText("ID (Opcional)");
 
         chkEstado.setFont(new java.awt.Font("Segoe UI", 1, 12));
         chkEstado.setSelected(true);
@@ -141,16 +148,18 @@ public class EjercicioView extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(lblNombre)
                                     .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-                                    .addComponent(txtSeries)
-                                    .addComponent(txtDuracion))
+                                    .addComponent(txtTelefono)
+                                    .addComponent(txtFechaNacimiento))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(lblDuracion)
-                                    .addComponent(lblRepeticiones)
-                                    .addComponent(lblTipo)
-                                    .addComponent(txtRepeticiones, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
-                                    .addComponent(txtTipo)))
-                            .addComponent(lblSeries)
+                                    .addComponent(lblPassword)
+                                    .addComponent(lblCorreo)
+                                    .addComponent(lblDocumento)
+                                    .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
+                                    .addComponent(txtCorreo)
+                                    .addComponent(txtDocumento)))
+                            .addComponent(lblTelefono)
+                            .addComponent(lblFechaNacimiento)
                             .addComponent(chkEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 685, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
@@ -166,25 +175,27 @@ public class EjercicioView extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblNombre)
-                    .addComponent(lblTipo))
+                    .addComponent(lblDocumento))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDocumento))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblSeries)
-                    .addComponent(lblRepeticiones))
+                    .addComponent(lblCorreo)
+                    .addComponent(lblTelefono))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtSeries, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtRepeticiones, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtTelefono)
+                    .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblDuracion))
+                    .addComponent(lblFechaNacimiento)
+                    .addComponent(lblPassword))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(chkEstado)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -209,30 +220,32 @@ public class EjercicioView extends javax.swing.JFrame {
         }
 
         try {
+            int id = txtPassword.getText().trim().isEmpty() ? 0 : Integer.parseInt(txtPassword.getText().trim());
             String nombre = txtNombre.getText().trim();
-            String tipo = txtTipo.getText().trim();
-            int series = Integer.parseInt(txtSeries.getText().trim());
-            int repeticiones = Integer.parseInt(txtRepeticiones.getText().trim());
-            int duracion = Integer.parseInt(txtDuracion.getText().trim());
+            String tipo = txtDocumento.getText().trim();
+            int series = Integer.parseInt(txtTelefono.getText().trim());
+            int repeticiones = Integer.parseInt(txtCorreo.getText().trim());
+            int duracion = Integer.parseInt(txtFechaNacimiento.getText().trim());
             boolean estado = chkEstado.isSelected();
 
-            Ejercicio nuevoEjercicio = new Ejercicio(0, nombre, tipo, series, repeticiones, duracion, estado);
+            Ejercicio nuevoEjercicio = new Ejercicio(id, nombre, tipo, series, repeticiones, duracion, estado);
             boolean guardado = ejercicioController.guardar(nuevoEjercicio);
 
             if (guardado) {
                 JOptionPane.showMessageDialog(this, "Ejercicio registrado correctamente.");
                 txtNombre.setText("");
-                txtTipo.setText("");
-                txtSeries.setText("");
-                txtRepeticiones.setText("");
-                txtDuracion.setText("");
+                txtDocumento.setText("");
+                txtTelefono.setText("");
+                txtCorreo.setText("");
+                txtFechaNacimiento.setText("");
+                txtPassword.setText("");
                 chkEstado.setSelected(true);
                 cargarEjercicios();
             } else {
                 JOptionPane.showMessageDialog(this, "No se pudo registrar el ejercicio.", "Validación", JOptionPane.WARNING_MESSAGE);
             }
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Series, repeticiones y duración deben ser números enteros válidos.", "Error numérico", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Series, repeticiones, duración y ID deben ser números enteros válidos.", "Error numérico", JOptionPane.WARNING_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error al guardar: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -248,26 +261,22 @@ public class EjercicioView extends javax.swing.JFrame {
                     tblEjercicios.getModel().getValueAt(filaModelo, 0).toString()
             );
 
+            txtPassword.setText(String.valueOf(idEjercicioSeleccionado));
             txtNombre.setText(
                     tblEjercicios.getModel().getValueAt(filaModelo, 1).toString()
             );
-
-            txtTipo.setText(
+            txtDocumento.setText(
                     tblEjercicios.getModel().getValueAt(filaModelo, 2).toString()
             );
-
-            txtSeries.setText(
+            txtTelefono.setText(
                     tblEjercicios.getModel().getValueAt(filaModelo, 3).toString()
             );
-
-            txtRepeticiones.setText(
+            txtCorreo.setText(
                     tblEjercicios.getModel().getValueAt(filaModelo, 4).toString()
             );
-
-            txtDuracion.setText(
+            txtFechaNacimiento.setText(
                     tblEjercicios.getModel().getValueAt(filaModelo, 5).toString()
             );
-
             chkEstado.setSelected(
                     "Activo".equals(
                             tblEjercicios.getModel().getValueAt(filaModelo, 6).toString()
@@ -277,44 +286,46 @@ public class EjercicioView extends javax.swing.JFrame {
     }
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {
-        if (idEjercicioSeleccionado == 0) {
+        if (idEjercicioSeleccionado == 0 && txtPassword.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Primero debes seleccionar un ejercicio de la tabla.");
             return;
         }
 
         try {
+            int id = idEjercicioSeleccionado != 0 ? idEjercicioSeleccionado : Integer.parseInt(txtPassword.getText().trim());
             String nombre = txtNombre.getText().trim();
-            String tipo = txtTipo.getText().trim();
-            int series = Integer.parseInt(txtSeries.getText().trim());
-            int repeticiones = Integer.parseInt(txtRepeticiones.getText().trim());
-            int duracion = Integer.parseInt(txtDuracion.getText().trim());
+            String tipo = txtDocumento.getText().trim();
+            int series = Integer.parseInt(txtTelefono.getText().trim());
+            int repeticiones = Integer.parseInt(txtCorreo.getText().trim());
+            int duracion = Integer.parseInt(txtFechaNacimiento.getText().trim());
             boolean estado = chkEstado.isSelected();
 
-            Ejercicio ejercicioActualizado = new Ejercicio(idEjercicioSeleccionado, nombre, tipo, series, repeticiones, duracion, estado);
+            Ejercicio ejercicioActualizado = new Ejercicio(id, nombre, tipo, series, repeticiones, duracion, estado);
             boolean actualizado = ejercicioController.actualizar(ejercicioActualizado);
 
             if (actualizado) {
                 JOptionPane.showMessageDialog(this, "Ejercicio actualizado correctamente.");
                 idEjercicioSeleccionado = 0;
                 txtNombre.setText("");
-                txtTipo.setText("");
-                txtSeries.setText("");
-                txtRepeticiones.setText("");
-                txtDuracion.setText("");
+                txtDocumento.setText("");
+                txtTelefono.setText("");
+                txtCorreo.setText("");
+                txtFechaNacimiento.setText("");
+                txtPassword.setText("");
                 chkEstado.setSelected(true);
                 cargarEjercicios();
             } else {
                 JOptionPane.showMessageDialog(this, "No se pudo actualizar el ejercicio.");
             }
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Series, repeticiones y duración deben ser numéricos.");
+            JOptionPane.showMessageDialog(this, "Series, repeticiones, duración y ID deben ser numéricos.");
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Error al actualizar: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {
-        if (idEjercicioSeleccionado == 0) {
+        if (idEjercicioSeleccionado == 0 && txtPassword.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Primero debes seleccionar un ejercicio de la tabla.");
             return;
         }
@@ -332,16 +343,18 @@ public class EjercicioView extends javax.swing.JFrame {
         }
 
         try {
-            boolean eliminado = ejercicioController.eliminar(idEjercicioSeleccionado);
+            int id = idEjercicioSeleccionado != 0 ? idEjercicioSeleccionado : Integer.parseInt(txtPassword.getText().trim());
+            boolean eliminado = ejercicioController.eliminar(id);
 
             if (eliminado) {
                 JOptionPane.showMessageDialog(this, "Ejercicio eliminado correctamente.");
                 idEjercicioSeleccionado = 0;
                 txtNombre.setText("");
-                txtTipo.setText("");
-                txtSeries.setText("");
-                txtRepeticiones.setText("");
-                txtDuracion.setText("");
+                txtDocumento.setText("");
+                txtTelefono.setText("");
+                txtCorreo.setText("");
+                txtFechaNacimiento.setText("");
+                txtPassword.setText("");
                 chkEstado.setSelected(true);
                 cargarEjercicios();
             } else {
@@ -354,18 +367,22 @@ public class EjercicioView extends javax.swing.JFrame {
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {
         txtNombre.setText("");
-        txtTipo.setText("");
-        txtSeries.setText("");
-        txtRepeticiones.setText("");
-        txtDuracion.setText("");
+        txtDocumento.setText("");
+        txtTelefono.setText("");
+        txtCorreo.setText("");
+        txtFechaNacimiento.setText("");
+        txtPassword.setText("");
         chkEstado.setSelected(true);
         idEjercicioSeleccionado = 0;
         tblEjercicios.clearSelection();
         txtNombre.requestFocusInWindow();
     }
 
+    private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {
+    }
+
     public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(() -> new EjercicioView().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> new ejercicioView().setVisible(true));
     }
 
     private javax.swing.JButton btnActualizar;
@@ -374,16 +391,18 @@ public class EjercicioView extends javax.swing.JFrame {
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JCheckBox chkEstado;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblDuracion;
+    private javax.swing.JLabel lblCorreo;
+    private javax.swing.JLabel lblDocumento;
+    private javax.swing.JLabel lblFechaNacimiento;
     private javax.swing.JLabel lblNombre;
-    private javax.swing.JLabel lblRepeticiones;
-    private javax.swing.JLabel lblSeries;
-    private javax.swing.JLabel lblTipo;
+    private javax.swing.JLabel lblPassword;
+    private javax.swing.JLabel lblTelefono;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JTable tblEjercicios;
-    private javax.swing.JTextField txtDuracion;
+    private javax.swing.JTextField txtCorreo;
+    private javax.swing.JTextField txtDocumento;
+    private javax.swing.JTextField txtFechaNacimiento;
     private javax.swing.JTextField txtNombre;
-    private javax.swing.JTextField txtRepeticiones;
-    private javax.swing.JTextField txtSeries;
-    private javax.swing.JTextField txtTipo;
+    private javax.swing.JPasswordField txtPassword;
+    private javax.swing.JTextField txtTelefono;
 }
