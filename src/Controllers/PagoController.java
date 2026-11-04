@@ -32,7 +32,4 @@ public class PagoController {
     public List<Pago> Listar(){
         return service.Listar();
     }
-   
-    
-    
 }

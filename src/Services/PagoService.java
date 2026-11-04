@@ -10,7 +10,6 @@ import Repositories.PagoRepository;
 public class PagoService {
     private PagoRepository repository;
     
-    // Métodos de pago aceptados (se pueden agregar o quitar)
     private static final List<String> METODOS_VALIDOS =
             Arrays.asList("Efectivo", "Tarjeta", "Transferencia");
     
@@ -18,7 +17,6 @@ public class PagoService {
         this.repository = new PagoRepository();
     }
     
-    // Devuelve el mensaje de error, o null si todo está bien
     private String validar(Pago p){
         if (p == null) {
             return "El pago no puede ser nulo";
