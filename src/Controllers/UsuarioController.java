@@ -60,7 +60,6 @@ public class UsuarioController {
     }
 
     public Usuario IniciarSesion(String documento, String password) {
-
         return usuarioService.IniciarSesion(documento, password);
     }
 }

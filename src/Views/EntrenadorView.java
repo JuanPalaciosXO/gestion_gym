@@ -7,10 +7,10 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class EntrenadorView extends javax.swing.JFrame {
-    
+
     private final EntrenadorController entrenadorController = new EntrenadorController();
     private int idEntrenadorSeleccionado = 0;
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(EntrenadorView.class.getName());
 
     public EntrenadorView() {
@@ -193,7 +193,9 @@ public class EntrenadorView extends javax.swing.JFrame {
         int respuesta = JOptionPane.showConfirmDialog(this,
                 "¿Estás seguro de eliminar este entrenador?",
                 "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
-        if (respuesta != JOptionPane.YES_OPTION) return;
+        if (respuesta != JOptionPane.YES_OPTION) {
+            return;
+        }
         try {
             if (entrenadorController.Eliminar(idEntrenadorSeleccionado)) {
                 JOptionPane.showMessageDialog(this, "Entrenador eliminado correctamente.");
@@ -213,7 +215,9 @@ public class EntrenadorView extends javax.swing.JFrame {
 
     private void tblEntrenadoresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblEntrenadoresMouseClicked
         int fila = tblEntrenadores.getSelectedRow();
-        if (fila < 0) return;
+        if (fila < 0) {
+            return;
+        }
         int f = tblEntrenadores.convertRowIndexToModel(fila);
         DefaultTableModel modelo = (DefaultTableModel) tblEntrenadores.getModel();
         idEntrenadorSeleccionado = Integer.parseInt(valorCelda(modelo, f, 0));
@@ -226,11 +230,13 @@ public class EntrenadorView extends javax.swing.JFrame {
     }//GEN-LAST:event_tblEntrenadoresMouseClicked
 
     private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
-     
+
     }//GEN-LAST:event_txtNombreActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-          if (!validarFormulario()) return;
+        if (!validarFormulario()) {
+            return;
+        }
         try {
             boolean guardado = entrenadorController.Guardar(0,
                     txtNombre.getText().trim(), txtDocumento.getText().trim(),
@@ -253,7 +259,9 @@ public class EntrenadorView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Selecciona un entrenador de la tabla.");
             return;
         }
-        if (!validarFormulario()) return;
+        if (!validarFormulario()) {
+            return;
+        }
         try {
             boolean actualizado = entrenadorController.Actualizar(idEntrenadorSeleccionado,
                     txtNombre.getText().trim(), txtDocumento.getText().trim(),
@@ -290,7 +298,7 @@ public class EntrenadorView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error al cargar entrenadores: " + ex.getMessage());
         }
     }
-    
+
     private void limpiarFormulario() {
         txtNombre.setText("");
         txtDocumento.setText("");
@@ -327,7 +335,7 @@ public class EntrenadorView extends javax.swing.JFrame {
         Object valor = modelo.getValueAt(fila, columna);
         return valor == null ? "" : valor.toString();
     }
-    
+
     /**
      * @param args the command line arguments
      */
