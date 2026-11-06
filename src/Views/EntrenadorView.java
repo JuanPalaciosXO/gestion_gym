@@ -18,207 +18,207 @@ public class EntrenadorView extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         cargarEntrenadores();
     }
-    
+
     private void contarRutinasEntrenador() {
-    if (idEntrenadorSeleccionado == 0) {
-        JOptionPane.showMessageDialog(this, "Primero selecciona un entrenador de la tabla.");
-        return;
-    }
-
-    String sql = "SELECT COUNT(*) AS total FROM rutina "
-            + "WHERE idEntrenador = ? AND estado = 1";
-
-    java.sql.Connection conexion = DB.Database.conectar();
-
-    if (conexion == null) {
-        JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
-        return;
-    }
-
-    try (java.sql.PreparedStatement stmt = conexion.prepareStatement(sql)) {
-        stmt.setInt(1, idEntrenadorSeleccionado);
-
-        try (java.sql.ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                int total = rs.getInt("total");
-
-                JOptionPane.showMessageDialog(this,
-                        "Entrenador: " + txtNombre.getText()
-                        + "\nRutinas activas asignadas: " + total,
-                        "Estadísticas del entrenador",
-                        JOptionPane.INFORMATION_MESSAGE);
-            }
+        if (idEntrenadorSeleccionado == 0) {
+            JOptionPane.showMessageDialog(this, "Primero selecciona un entrenador de la tabla.");
+            return;
         }
-    } catch (java.sql.SQLException ex) {
-        JOptionPane.showMessageDialog(this,
-                "Error al contar rutinas: " + ex.getMessage());
-    } finally {
-        DB.Database.desconectar(conexion);
+
+        String sql = "SELECT COUNT(*) AS total FROM rutina "
+                + "WHERE idEntrenador = ? AND estado = 1";
+
+        java.sql.Connection conexion = DB.Database.conectar();
+
+        if (conexion == null) {
+            JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
+            return;
+        }
+
+        try (java.sql.PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setInt(1, idEntrenadorSeleccionado);
+
+            try (java.sql.ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int total = rs.getInt("total");
+
+                    JOptionPane.showMessageDialog(this,
+                            "Entrenador: " + txtNombre.getText()
+                            + "\nRutinas activas asignadas: " + total,
+                            "Estadísticas del entrenador",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        } catch (java.sql.SQLException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al contar rutinas: " + ex.getMessage());
+        } finally {
+            DB.Database.desconectar(conexion);
+        }
     }
-}
-    
+
     private void contarAlumnosEntrenador() {
-    if (idEntrenadorSeleccionado == 0) {
-        JOptionPane.showMessageDialog(this, "Primero selecciona un entrenador de la tabla.");
-        return;
-    }
-
-    String sql = "SELECT COUNT(DISTINCT u.idUsuario) AS total "
-            + "FROM usuarios u "
-            + "INNER JOIN usuario_rutina ur ON u.idUsuario = ur.idUsuario "
-            + "INNER JOIN rutina r ON ur.idRutina = r.idRutina "
-            + "WHERE r.idEntrenador = ? "
-            + "AND r.estado = 1 AND u.estado = 1";
-
-    java.sql.Connection conexion = DB.Database.conectar();
-
-    if (conexion == null) {
-        JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
-        return;
-    }
-
-    try (java.sql.PreparedStatement stmt = conexion.prepareStatement(sql)) {
-        stmt.setInt(1, idEntrenadorSeleccionado);
-
-        try (java.sql.ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                int total = rs.getInt("total");
-
-                JOptionPane.showMessageDialog(this,
-                        "Entrenador: " + txtNombre.getText()
-                        + "\nAlumnos activos asignados: " + total,
-                        "Alumnos del entrenador",
-                        JOptionPane.INFORMATION_MESSAGE);
-            }
+        if (idEntrenadorSeleccionado == 0) {
+            JOptionPane.showMessageDialog(this, "Primero selecciona un entrenador de la tabla.");
+            return;
         }
-    } catch (java.sql.SQLException ex) {
-        JOptionPane.showMessageDialog(this,
-                "Error al contar alumnos: " + ex.getMessage());
-    } finally {
-        DB.Database.desconectar(conexion);
+
+        String sql = "SELECT COUNT(DISTINCT u.idUsuario) AS total "
+                + "FROM usuarios u "
+                + "INNER JOIN usuario_rutina ur ON u.idUsuario = ur.idUsuario "
+                + "INNER JOIN rutina r ON ur.idRutina = r.idRutina "
+                + "WHERE r.idEntrenador = ? "
+                + "AND r.estado = 1 AND u.estado = 1";
+
+        java.sql.Connection conexion = DB.Database.conectar();
+
+        if (conexion == null) {
+            JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
+            return;
+        }
+
+        try (java.sql.PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setInt(1, idEntrenadorSeleccionado);
+
+            try (java.sql.ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int total = rs.getInt("total");
+
+                    JOptionPane.showMessageDialog(this,
+                            "Entrenador: " + txtNombre.getText()
+                            + "\nAlumnos activos asignados: " + total,
+                            "Alumnos del entrenador",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        } catch (java.sql.SQLException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al contar alumnos: " + ex.getMessage());
+        } finally {
+            DB.Database.desconectar(conexion);
+        }
     }
-}
-    
+
     private void analizarNivelesEntrenador() {
-    if (idEntrenadorSeleccionado == 0) {
-        JOptionPane.showMessageDialog(this, "Primero selecciona un entrenador.");
-        return;
-    }
+        if (idEntrenadorSeleccionado == 0) {
+            JOptionPane.showMessageDialog(this, "Primero selecciona un entrenador.");
+            return;
+        }
 
-    String sql = "SELECT nivel, COUNT(*) AS total "
-            + "FROM rutina "
-            + "WHERE idEntrenador = ? AND estado = 1 "
-            + "GROUP BY nivel";
+        String sql = "SELECT nivel, COUNT(*) AS total "
+                + "FROM rutina "
+                + "WHERE idEntrenador = ? AND estado = 1 "
+                + "GROUP BY nivel";
 
-    java.sql.Connection conexion = DB.Database.conectar();
+        java.sql.Connection conexion = DB.Database.conectar();
 
-    if (conexion == null) {
-        JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
-        return;
-    }
+        if (conexion == null) {
+            JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
+            return;
+        }
 
-    int principiantes = 0;
-    int intermedios = 0;
-    int avanzados = 0;
-    int sinNivel = 0;
+        int principiantes = 0;
+        int intermedios = 0;
+        int avanzados = 0;
+        int sinNivel = 0;
 
-    try (java.sql.PreparedStatement stmt = conexion.prepareStatement(sql)) {
-        stmt.setInt(1, idEntrenadorSeleccionado);
+        try (java.sql.PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setInt(1, idEntrenadorSeleccionado);
 
-        try (java.sql.ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                String nivel = rs.getString("nivel");
-                int total = rs.getInt("total");
+            try (java.sql.ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String nivel = rs.getString("nivel");
+                    int total = rs.getInt("total");
 
-                if (nivel == null) {
-                    sinNivel += total;
-                } else {
-                    switch (nivel.trim().toLowerCase()) {
-                        case "principiante":
-                            principiantes += total;
-                            break;
-                        case "intermedio":
-                            intermedios += total;
-                            break;
-                        case "avanzado":
-                            avanzados += total;
-                            break;
-                        default:
-                            sinNivel += total;
+                    if (nivel == null) {
+                        sinNivel += total;
+                    } else {
+                        switch (nivel.trim().toLowerCase()) {
+                            case "principiante":
+                                principiantes += total;
+                                break;
+                            case "intermedio":
+                                intermedios += total;
+                                break;
+                            case "avanzado":
+                                avanzados += total;
+                                break;
+                            default:
+                                sinNivel += total;
+                        }
                     }
                 }
             }
+
+            int totalRutinas = principiantes + intermedios + avanzados + sinNivel;
+
+            JOptionPane.showMessageDialog(this,
+                    "Entrenador: " + txtNombre.getText()
+                    + "\n\nPrincipiante: " + principiantes
+                    + "\nIntermedio: " + intermedios
+                    + "\nAvanzado: " + avanzados
+                    + "\nSin nivel reconocido: " + sinNivel
+                    + "\n\nTotal de rutinas activas: " + totalRutinas,
+                    "Análisis de niveles",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (java.sql.SQLException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al analizar niveles: " + ex.getMessage());
+        } finally {
+            DB.Database.desconectar(conexion);
         }
-
-        int totalRutinas = principiantes + intermedios + avanzados + sinNivel;
-
-        JOptionPane.showMessageDialog(this,
-                "Entrenador: " + txtNombre.getText()
-                + "\n\nPrincipiante: " + principiantes
-                + "\nIntermedio: " + intermedios
-                + "\nAvanzado: " + avanzados
-                + "\nSin nivel reconocido: " + sinNivel
-                + "\n\nTotal de rutinas activas: " + totalRutinas,
-                "Análisis de niveles",
-                JOptionPane.INFORMATION_MESSAGE);
-
-    } catch (java.sql.SQLException ex) {
-        JOptionPane.showMessageDialog(this,
-                "Error al analizar niveles: " + ex.getMessage());
-    } finally {
-        DB.Database.desconectar(conexion);
     }
-}
-    
+
     private void calcularCargaEntrenamiento() {
-    if (idEntrenadorSeleccionado == 0) {
-        JOptionPane.showMessageDialog(this, "Primero selecciona un entrenador.");
-        return;
-    }
-
-    String sql = "SELECT COUNT(DISTINCT r.idRutina) AS rutinas, "
-            + "COUNT(re.idEjercicio) AS ejercicios, "
-            + "COALESCE(SUM(e.series), 0) AS totalSeries, "
-            + "COALESCE(SUM(e.series * e.repeticiones), 0) AS totalRepeticiones "
-            + "FROM rutina r "
-            + "LEFT JOIN rutina_ejercicio re ON r.idRutina = re.idRutina "
-            + "LEFT JOIN ejercicio e ON re.idEjercicio = e.idEjercicio AND e.estado = 1 "
-            + "WHERE r.idEntrenador = ? AND r.estado = 1";
-
-    java.sql.Connection conexion = DB.Database.conectar();
-
-    if (conexion == null) {
-        JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
-        return;
-    }
-
-    try (java.sql.PreparedStatement stmt = conexion.prepareStatement(sql)) {
-        stmt.setInt(1, idEntrenadorSeleccionado);
-
-        try (java.sql.ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                int rutinas = rs.getInt("rutinas");
-                int ejercicios = rs.getInt("ejercicios");
-                int series = rs.getInt("totalSeries");
-                int repeticiones = rs.getInt("totalRepeticiones");
-
-                JOptionPane.showMessageDialog(this,
-                        "Entrenador: " + txtNombre.getText()
-                        + "\nRutinas activas: " + rutinas
-                        + "\nEjercicios asignados: " + ejercicios
-                        + "\nTotal de series: " + series
-                        + "\nTotal de repeticiones: " + repeticiones,
-                        "Carga de entrenamiento",
-                        JOptionPane.INFORMATION_MESSAGE);
-            }
+        if (idEntrenadorSeleccionado == 0) {
+            JOptionPane.showMessageDialog(this, "Primero selecciona un entrenador.");
+            return;
         }
-    } catch (java.sql.SQLException ex) {
-        JOptionPane.showMessageDialog(this,
-                "Error al calcular carga: " + ex.getMessage());
-    } finally {
-        DB.Database.desconectar(conexion);
+
+        String sql = "SELECT COUNT(DISTINCT r.idRutina) AS rutinas, "
+                + "COUNT(re.idEjercicio) AS ejercicios, "
+                + "COALESCE(SUM(e.series), 0) AS totalSeries, "
+                + "COALESCE(SUM(e.series * e.repeticiones), 0) AS totalRepeticiones "
+                + "FROM rutina r "
+                + "LEFT JOIN rutina_ejercicio re ON r.idRutina = re.idRutina "
+                + "LEFT JOIN ejercicio e ON re.idEjercicio = e.idEjercicio AND e.estado = 1 "
+                + "WHERE r.idEntrenador = ? AND r.estado = 1";
+
+        java.sql.Connection conexion = DB.Database.conectar();
+
+        if (conexion == null) {
+            JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
+            return;
+        }
+
+        try (java.sql.PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setInt(1, idEntrenadorSeleccionado);
+
+            try (java.sql.ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int rutinas = rs.getInt("rutinas");
+                    int ejercicios = rs.getInt("ejercicios");
+                    int series = rs.getInt("totalSeries");
+                    int repeticiones = rs.getInt("totalRepeticiones");
+
+                    JOptionPane.showMessageDialog(this,
+                            "Entrenador: " + txtNombre.getText()
+                            + "\nRutinas activas: " + rutinas
+                            + "\nEjercicios asignados: " + ejercicios
+                            + "\nTotal de series: " + series
+                            + "\nTotal de repeticiones: " + repeticiones,
+                            "Carga de entrenamiento",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        } catch (java.sql.SQLException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al calcular carga: " + ex.getMessage());
+        } finally {
+            DB.Database.desconectar(conexion);
+        }
     }
-}
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
