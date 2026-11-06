@@ -44,7 +44,7 @@ public class EntrenadorRepository {
 
         String sql = "SELECT idEntrenador, nombre, documento, "
                 + "telefono, correo, especialidad, estado "
-                + "FROM entrenador ORDER BY idEntrenador";
+                + "FROM entrenador WHERE estado = 1 ORDER BY idEntrenador";
 
         try (Connection conexion = Database.conectar()) {
             if (conexion == null) {
@@ -107,7 +107,7 @@ public class EntrenadorRepository {
     }
 
     public boolean Eliminar(int idEntrenador) {
-        String sql = "DELETE FROM entrenador WHERE idEntrenador = ?";
+        String sql = "UPDATE entrenador SET estado = 0 WHERE idEntrenador = ?";
 
         try (Connection conexion = Database.conectar()) {
             if (conexion == null) {
@@ -120,7 +120,7 @@ public class EntrenadorRepository {
             }
 
         } catch (SQLException ex) {
-            System.out.println("Error al eliminar entrenador: "
+            System.out.println("Error al desactivar entrenador: "
                     + ex.getMessage());
             return false;
         }

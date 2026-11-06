@@ -1,38 +1,48 @@
-
 package Models;
 
+public class Ejercicio {
 
- public class Ejercicio {
-    
-     private int idEjercicio ;
-     private String nombre; 
-     private String tipoMuscular; 
-     private int series; 
-     private int repeticiones; 
-     private int duracion; 
-     private boolean estado; 
-     
-     public Ejercicio(){}
-     
-     public Ejercicio (int idEjercicio, String nombre, String tipoMuscular, int series, int repeticiones, int duracion, boolean estado){
-     
-      this.idEjercicio = idEjercicio ; 
-      this.nombre = nombre; 
-      this.tipoMuscular = tipoMuscular; 
-      this.series = series; 
-      this.repeticiones = repeticiones;
-      this.duracion = duracion; 
-      this.estado = estado ; 
-  
-     }
+    private int idEjercicio;
+    private String nombre;
+    private String tipoMuscular;
+    private int series;
+    private int repeticiones;
+    private int duracion;
+    private boolean estado;
+    private Integer idMn;
+
+    public Ejercicio() {
+    }
+
+    public Ejercicio(int idEjercicio, String nombre, String tipoMuscular,
+            int series, int repeticiones, int duracion, boolean estado) {
+
+        this.idEjercicio = idEjercicio;
+        this.nombre = nombre;
+        this.tipoMuscular = tipoMuscular;
+        this.series = series;
+        this.repeticiones = repeticiones;
+        this.duracion = duracion;
+        this.estado = estado;
+    }
+
+    public Ejercicio(int idEjercicio, String nombre, String tipoMuscular,
+            int series, int repeticiones, int duracion, boolean estado,
+            Integer idMn) {
+
+        this(idEjercicio, nombre, tipoMuscular, series,
+                repeticiones, duracion, estado);
+
+        this.idMn = idMn;
+    }
 
     public int getId() {
         return idEjercicio;
     }
 
-public void setId(int id) {
-    this.idEjercicio = id;
-}
+    public void setId(int id) {
+        this.idEjercicio = id;
+    }
 
     public String getNombre() {
         return nombre;
@@ -81,6 +91,12 @@ public void setId(int id) {
     public void setEstado(boolean estado) {
         this.estado = estado;
     }
-     
-     
+
+    public Integer getIdMn() {
+        return idMn;
+    }
+
+    public void setIdMn(Integer idMn) {
+        this.idMn = idMn;
+    }
 }

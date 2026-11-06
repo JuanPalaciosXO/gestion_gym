@@ -7,10 +7,17 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import Controllers.RutinaController;
+import Controllers.UsuarioRutinaController;
+import Models.Rutina;
 
 public class UsuarioView extends javax.swing.JFrame {
 
     private final UsuarioController usuarioController = new UsuarioController();
+    private final RutinaController rutinaController = new RutinaController();
+
+    private final UsuarioRutinaController usuarioRutinaController
+            = new UsuarioRutinaController();
 
     private int idUsuarioSeleccionado = 0;
 
@@ -20,6 +27,7 @@ public class UsuarioView extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         cargarUsuarios();
+        cargarRutinasDisponibles();
     }
 
     private void cargarUsuarios() {
@@ -50,6 +58,28 @@ public class UsuarioView extends javax.swing.JFrame {
         }
     }
 
+    private void cargarRutinasDisponibles() {
+        cmbRutina.removeAllItems();
+        cmbRutina.addItem("Seleccione una rutina");
+
+        try {
+            for (Rutina rutina : rutinaController.Listar()) {
+                if (rutina.isEstado()) {
+                    cmbRutina.addItem(
+                            rutina.getId() + " - " + rutina.getNombre()
+                    );
+                }
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error al cargar rutinas: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -75,6 +105,11 @@ public class UsuarioView extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblUsuarios = new javax.swing.JTable();
         btnVolver = new javax.swing.JButton();
+        cmbRutina = new javax.swing.JComboBox<>();
+        lblRutina = new javax.swing.JLabel();
+        btnAsignarRutina = new javax.swing.JButton();
+        btnVerRutinas = new javax.swing.JButton();
+        btnQuitarRutina = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -138,6 +173,21 @@ public class UsuarioView extends javax.swing.JFrame {
         btnVolver.setText("Volver");
         btnVolver.addActionListener(this::btnVolverActionPerformed);
 
+        cmbRutina.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbRutina.addActionListener(this::cmbRutinaActionPerformed);
+
+        lblRutina.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lblRutina.setText("Rutina");
+
+        btnAsignarRutina.setText("Asignar rutina");
+        btnAsignarRutina.addActionListener(this::btnAsignarRutinaActionPerformed);
+
+        btnVerRutinas.setText("Ver rutinas");
+        btnVerRutinas.addActionListener(this::btnVerRutinasActionPerformed);
+
+        btnQuitarRutina.setText("Quitar rutina");
+        btnQuitarRutina.addActionListener(this::btnQuitarRutinaActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -145,40 +195,49 @@ public class UsuarioView extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(lblNombre)
-                                    .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-                                    .addComponent(txtTelefono)
-                                    .addComponent(txtFechaNacimiento))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(lblPassword)
-                                    .addComponent(lblCorreo)
-                                    .addComponent(lblDocumento)
-                                    .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
-                                    .addComponent(txtCorreo)
-                                    .addComponent(txtDocumento)))
-                            .addComponent(lblTelefono)
-                            .addComponent(lblFechaNacimiento)
-                            .addComponent(chkEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 685, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(282, 282, 282)
                         .addComponent(lblTitulo))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(139, 139, 139)
-                        .addComponent(btnGuardar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnActualizar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnEliminar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnLimpiar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnVolver)))
+                        .addGap(29, 29, 29)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chkEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 685, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblRutina)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(cmbRutina, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lblNombre, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtNombre, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+                                    .addComponent(lblTelefono, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblFechaNacimiento, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtTelefono, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(lblPassword)
+                                        .addComponent(lblCorreo)
+                                        .addComponent(txtPassword)
+                                        .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(lblDocumento)
+                                    .addComponent(txtDocumento, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(btnAsignarRutina)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnVerRutinas)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnQuitarRutina))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(113, 113, 113)
+                                .addComponent(btnGuardar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnActualizar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEliminar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnLimpiar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnVolver)))))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -191,9 +250,9 @@ public class UsuarioView extends javax.swing.JFrame {
                     .addComponent(lblNombre)
                     .addComponent(lblDocumento))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtDocumento, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                    .addComponent(txtNombre))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
+                    .addComponent(txtDocumento))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCorreo)
@@ -211,8 +270,16 @@ public class UsuarioView extends javax.swing.JFrame {
                     .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
+                .addComponent(lblRutina)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnQuitarRutina, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                    .addComponent(btnAsignarRutina, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cmbRutina)
+                    .addComponent(btnVerRutinas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addComponent(chkEstado)
-                .addGap(15, 15, 15)
+                .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -563,23 +630,126 @@ public class UsuarioView extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_btnVolverActionPerformed
 
+    private void cmbRutinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbRutinaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbRutinaActionPerformed
+
+    private void btnAsignarRutinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAsignarRutinaActionPerformed
+        if (idUsuarioSeleccionado == 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Primero debes seleccionar un usuario de la tabla.");
+            return;
+        }
+
+        if (cmbRutina.getSelectedIndex() <= 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Debes seleccionar una rutina.");
+            return;
+        }
+
+        try {
+            String seleccion = cmbRutina.getSelectedItem().toString();
+            int idRutina = Integer.parseInt(seleccion.split(" - ", 2)[0]);
+
+            boolean asignado = usuarioRutinaController.asignarRutina(
+                    idUsuarioSeleccionado,
+                    idRutina
+            );
+
+            if (asignado) {
+                JOptionPane.showMessageDialog(this,
+                        "Rutina asignada correctamente al usuario.");
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "No se pudo asignar la rutina. Verifica si ya está asignada.");
+            }
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al asignar rutina: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAsignarRutinaActionPerformed
+
+    private void btnVerRutinasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerRutinasActionPerformed
+        if (idUsuarioSeleccionado == 0) {
+            JOptionPane.showMessageDialog(this, "Selecciona un usuario.");
+            return;
+        }
+
+        try {
+            java.util.List<Integer> ids
+                    = usuarioRutinaController.obtenerRutinas(idUsuarioSeleccionado);
+
+            if (ids.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "El usuario no tiene rutinas asignadas.");
+                return;
+            }
+
+            StringBuilder mensaje = new StringBuilder("Rutinas asignadas:\n");
+
+            for (Rutina rutina : rutinaController.Listar()) {
+                if (ids.contains(rutina.getId())) {
+                    mensaje.append(rutina.getId())
+                            .append(" - ")
+                            .append(rutina.getNombre())
+                            .append("\n");
+                }
+            }
+
+            JOptionPane.showMessageDialog(this, mensaje.toString());
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_btnVerRutinasActionPerformed
+
+    private void btnQuitarRutinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitarRutinaActionPerformed
+        if (idUsuarioSeleccionado == 0 || cmbRutina.getSelectedIndex() <= 0) {
+            JOptionPane.showMessageDialog(this, "Selecciona un usuario y una rutina.");
+            return;
+        }
+
+        try {
+            String seleccion = cmbRutina.getSelectedItem().toString();
+            int idRutina = Integer.parseInt(seleccion.split(" - ", 2)[0]);
+
+            boolean quitada = usuarioRutinaController.quitarRutina(
+                    idUsuarioSeleccionado, idRutina
+            );
+
+            JOptionPane.showMessageDialog(this,
+                    quitada ? "Rutina retirada correctamente."
+                            : "No se encontró esa asignación.");
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_btnQuitarRutinaActionPerformed
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> new UsuarioView().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnAsignarRutina;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
+    private javax.swing.JButton btnQuitarRutina;
+    private javax.swing.JButton btnVerRutinas;
     private javax.swing.JButton btnVolver;
     private javax.swing.JCheckBox chkEstado;
+    private javax.swing.JComboBox<String> cmbRutina;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblCorreo;
     private javax.swing.JLabel lblDocumento;
     private javax.swing.JLabel lblFechaNacimiento;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JLabel lblPassword;
+    private javax.swing.JLabel lblRutina;
     private javax.swing.JLabel lblTelefono;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JTable tblUsuarios;

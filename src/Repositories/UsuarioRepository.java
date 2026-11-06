@@ -65,7 +65,7 @@ public class UsuarioRepository {
 
         List<Usuario> usuarios = new ArrayList<>();
 
-        String sql = "SELECT * FROM usuarios";
+        String sql = "SELECT * FROM usuarios WHERE estado = 1 ORDER BY idUsuario";
 
         try (Connection conexion = Database.conectar()) {
 
@@ -154,7 +154,7 @@ public class UsuarioRepository {
 
     public boolean Eliminar(int idUsuario) {
 
-        String sql = "DELETE FROM usuarios WHERE idUsuario = ?";
+        String sql = "UPDATE usuarios SET estado = 0 WHERE idUsuario = ?";
 
         try (Connection conexion = Database.conectar()) {
 

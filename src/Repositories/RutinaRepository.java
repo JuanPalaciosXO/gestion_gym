@@ -8,20 +8,30 @@ import java.util.ArrayList;
 public class RutinaRepository {
 
     public boolean Guardar(Rutina rutina) {
-        String sql = "INSERT INTO rutinas (id, nombre, objetivo, nivel, descripcion, estado) VALUES (?, ?, ?, ?, ?, ?)";
-        
-        try (Connection conn = Database.conectar();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
-            pstmt.setInt(1, rutina.getId());
-            pstmt.setString(2, rutina.getNombre());
-            pstmt.setString(3, rutina.getObjetivo());
-            pstmt.setString(4, rutina.getNivel());
-            pstmt.setString(5, rutina.getDescripcion());
-            pstmt.setBoolean(6, rutina.isEstado());
-            
-            return pstmt.executeUpdate() > 0;
-            
+        String sql = "INSERT INTO rutina "
+                + "(nombre, objetivo, nivel, descripcion, estado, idEntrenador) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = Database.conectar()) {
+            if (conn == null) {
+                return false;
+            }
+
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, rutina.getNombre());
+                pstmt.setString(2, rutina.getObjetivo());
+                pstmt.setString(3, rutina.getNivel());
+                pstmt.setString(4, rutina.getDescripcion());
+                pstmt.setBoolean(5, rutina.isEstado());
+                if (rutina.getIdEntrenador() != null) {
+                    pstmt.setInt(6, rutina.getIdEntrenador());
+                } else {
+                    pstmt.setNull(6, java.sql.Types.INTEGER);
+                }
+
+                return pstmt.executeUpdate() > 0;
+            }
+
         } catch (SQLException e) {
             System.out.println("Error al guardar rutina: " + e.getMessage());
             return false;
@@ -29,20 +39,32 @@ public class RutinaRepository {
     }
 
     public boolean Actualizar(Rutina rutina) {
-        String sql = "UPDATE rutinas SET nombre = ?, objetivo = ?, nivel = ?, descripcion = ?, estado = ? WHERE id = ?";
-        
-        try (Connection conn = Database.conectar();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
-            pstmt.setString(1, rutina.getNombre());
-            pstmt.setString(2, rutina.getObjetivo());
-            pstmt.setString(3, rutina.getNivel());
-            pstmt.setString(4, rutina.getDescripcion());
-            pstmt.setBoolean(5, rutina.isEstado());
-            pstmt.setInt(6, rutina.getId());
-            
-            return pstmt.executeUpdate() > 0;
-            
+        String sql = "UPDATE rutina SET nombre = ?, "
+                + "objetivo = ?, nivel = ?, descripcion = ?, "
+                + "estado = ?, idEntrenador = ? WHERE idRutina = ?";
+
+        try (Connection conn = Database.conectar()) {
+            if (conn == null) {
+                return false;
+            }
+
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, rutina.getNombre());
+                pstmt.setString(2, rutina.getObjetivo());
+                pstmt.setString(3, rutina.getNivel());
+                pstmt.setString(4, rutina.getDescripcion());
+                pstmt.setBoolean(5, rutina.isEstado());
+                if (rutina.getIdEntrenador() != null) {
+                    pstmt.setInt(6, rutina.getIdEntrenador());
+                } else {
+                    pstmt.setNull(6, java.sql.Types.INTEGER);
+                }
+
+                pstmt.setInt(7, rutina.getId());
+
+                return pstmt.executeUpdate() > 0;
+            }
+
         } catch (SQLException e) {
             System.out.println("Error al actualizar rutina: " + e.getMessage());
             return false;
@@ -50,72 +72,93 @@ public class RutinaRepository {
     }
 
     public boolean Eliminar(int idRutina) {
-        String sql = "DELETE FROM rutinas WHERE id = ?";
-        
-        try (Connection conn = Database.conectar();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
-            pstmt.setInt(1, idRutina);
-            return pstmt.executeUpdate() > 0;
-            
+        String sql = "UPDATE rutina SET estado = 0 "
+                + "WHERE idRutina = ?";
+
+        try (Connection conn = Database.conectar()) {
+            if (conn == null) {
+                return false;
+            }
+
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, idRutina);
+                return pstmt.executeUpdate() > 0;
+            }
+
         } catch (SQLException e) {
-            System.out.println("Error al eliminar rutina: " + e.getMessage());
+            System.out.println("Error al desactivar rutina: " + e.getMessage());
             return false;
         }
     }
 
     public Rutina ConsultarPorId(int idRutina) {
-        String sql = "SELECT * FROM rutinas WHERE id = ?";
-        Rutina rutina = null;
-        
-        try (Connection conn = Database.conectar();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
-            pstmt.setInt(1, idRutina);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    rutina = new Rutina(
-                        rs.getInt("id"),
-                        rs.getString("nombre"),
-                        rs.getString("objetivo"),
-                        rs.getString("nivel"),
-                        rs.getString("descripcion"),
-                        rs.getBoolean("estado")
-                    );
+        String sql = "SELECT * FROM rutina "
+                + "WHERE idRutina = ? AND estado = 1";
+
+        try (Connection conn = Database.conectar()) {
+            if (conn == null) {
+                return null;
+            }
+
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setInt(1, idRutina);
+
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        return new Rutina(
+                                rs.getInt("idRutina"),
+                                rs.getString("nombre"),
+                                rs.getString("objetivo"),
+                                rs.getString("nivel"),
+                                rs.getString("descripcion"),
+                                rs.getBoolean("estado"),
+                                rs.getObject("idEntrenador", Integer.class)
+                        );
+                    }
                 }
             }
-            
+
         } catch (SQLException e) {
-            System.out.println("Error al consultar rutina por ID: " + e.getMessage());
+            System.out.println("Error al consultar rutina por ID: "
+                    + e.getMessage());
         }
-        
-        return rutina;
+
+        return null;
     }
 
     public ArrayList<Rutina> Listar() {
         ArrayList<Rutina> lista = new ArrayList<>();
-        String sql = "SELECT * FROM rutinas";
-        
-        try (Connection conn = Database.conectar();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            
-            while (rs.next()) {
-                Rutina r = new Rutina(
-                    rs.getInt("id"),
-                    rs.getString("nombre"),
-                    rs.getString("objetivo"),
-                    rs.getString("nivel"),
-                    rs.getString("descripcion"),
-                    rs.getBoolean("estado")
-                );
-                lista.add(r);
+
+        String sql = "SELECT * FROM rutina "
+                + "WHERE estado = 1 ORDER BY idRutina";
+
+        try (Connection conn = Database.conectar()) {
+            if (conn == null) {
+                return lista;
             }
-            
+
+            try (PreparedStatement pstmt = conn.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
+
+                while (rs.next()) {
+                    Rutina rutina = new Rutina(
+                            rs.getInt("idRutina"),
+                            rs.getString("nombre"),
+                            rs.getString("objetivo"),
+                            rs.getString("nivel"),
+                            rs.getString("descripcion"),
+                            rs.getBoolean("estado"),
+                            rs.getObject("idEntrenador", Integer.class)
+                    );
+
+                    lista.add(rutina);
+                }
+            }
+
         } catch (SQLException e) {
-            System.out.println("Error al listar rutinas: " + e.getMessage());
+            System.out.println("Error al listar rutinas: "
+                    + e.getMessage());
         }
-        
+
         return lista;
     }
 }

@@ -1,26 +1,35 @@
-
 package Models;
 
 public class Rutina {
-    
-    private int idRutina; 
-    private String nombre; 
+
+    private int idRutina;
+    private String nombre;
     private String objetivo;
-    private String nivel; 
-    private String descripcion; 
-    private boolean estado; 
-    
-    public Rutina(){}
-    
-    public Rutina (int idRutina, String nombre, String objetivo,String nivel, String descripcion, boolean estado){
-        
-        this.idRutina = idRutina; 
-        this.nombre = nombre; 
-        this.objetivo = objetivo; 
+    private String nivel;
+    private String descripcion;
+    private boolean estado;
+    private Integer idEntrenador;
+
+    public Rutina() {
+    }
+
+    public Rutina(int idRutina, String nombre, String objetivo,
+            String nivel, String descripcion, boolean estado) {
+
+        this.idRutina = idRutina;
+        this.nombre = nombre;
+        this.objetivo = objetivo;
         this.nivel = nivel;
-        this.descripcion = descripcion; 
-        this.estado = estado; 
-    
+        this.descripcion = descripcion;
+        this.estado = estado;
+    }
+
+    public Rutina(int idRutina, String nombre, String objetivo,
+            String nivel, String descripcion, boolean estado,
+            Integer idEntrenador) {
+
+        this(idRutina, nombre, objetivo, nivel, descripcion, estado);
+        this.idEntrenador = idEntrenador;
     }
 
     public int getId() {
@@ -70,5 +79,12 @@ public class Rutina {
     public void setEstado(boolean estado) {
         this.estado = estado;
     }
-    
+
+    public Integer getIdEntrenador() {
+        return idEntrenador;
+    }
+
+    public void setIdEntrenador(Integer idEntrenador) {
+        this.idEntrenador = idEntrenador;
+    }
 }

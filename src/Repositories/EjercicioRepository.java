@@ -8,22 +8,26 @@ import java.util.ArrayList;
 public class EjercicioRepository {
 
     public boolean Guardar(Ejercicio ejercicio) {
-        String sql = "INSERT INTO ejercicios (id, nombre, tipo_muscular, series, repeticiones, duracion, estado) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        
-        try (Connection conn = Database.conectar();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
-            pstmt.setInt(1, ejercicio.getId());
-            pstmt.setString(2, ejercicio.getNombre());
-            pstmt.setString(3, ejercicio.getTipoMuscular());
-            pstmt.setInt(4, ejercicio.getSeries());
-            pstmt.setInt(5, ejercicio.getRepeticiones());
-            pstmt.setInt(6, ejercicio.getDuracion());
-            pstmt.setBoolean(7, ejercicio.isEstado());
-            
-            int filasAfectadas = pstmt.executeUpdate();
-            return filasAfectadas > 0;
-            
+        String sql = "INSERT INTO ejercicio "
+                + "(nombre, tipoMuscular, series, repeticiones, duracion, estado, idMn) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = Database.conectar(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, ejercicio.getNombre());
+            pstmt.setString(2, ejercicio.getTipoMuscular());
+            pstmt.setInt(3, ejercicio.getSeries());
+            pstmt.setInt(4, ejercicio.getRepeticiones());
+            pstmt.setInt(5, ejercicio.getDuracion());
+            pstmt.setBoolean(6, ejercicio.isEstado());
+            if (ejercicio.getIdMn() != null) {
+                pstmt.setInt(7, ejercicio.getIdMn());
+            } else {
+                pstmt.setNull(7, java.sql.Types.INTEGER);
+            }
+
+            return pstmt.executeUpdate() > 0;
+
         } catch (SQLException e) {
             System.out.println("Error al guardar ejercicio: " + e.getMessage());
             return false;
@@ -31,22 +35,28 @@ public class EjercicioRepository {
     }
 
     public boolean Actualizar(Ejercicio ejercicio) {
-        String sql = "UPDATE ejercicios SET nombre = ?, tipo_muscular = ?, series = ?, repeticiones = ?, duracion = ?, estado = ? WHERE id = ?";
-        
-        try (Connection conn = Database.conectar();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
+        String sql = "UPDATE ejercicio SET "
+                + "nombre = ?, tipoMuscular = ?, series = ?, "
+                + "repeticiones = ?, duracion = ?, estado = ?, idMn = ? "
+                + "WHERE idEjercicio = ?";
+        try (Connection conn = Database.conectar(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setString(1, ejercicio.getNombre());
             pstmt.setString(2, ejercicio.getTipoMuscular());
             pstmt.setInt(3, ejercicio.getSeries());
             pstmt.setInt(4, ejercicio.getRepeticiones());
             pstmt.setInt(5, ejercicio.getDuracion());
             pstmt.setBoolean(6, ejercicio.isEstado());
-            pstmt.setInt(7, ejercicio.getId());
-            
-            int filasAfectadas = pstmt.executeUpdate();
-            return filasAfectadas > 0;
-            
+            if (ejercicio.getIdMn() != null) {
+                pstmt.setInt(7, ejercicio.getIdMn());
+            } else {
+                pstmt.setNull(7, java.sql.Types.INTEGER);
+            }
+
+            pstmt.setInt(8, ejercicio.getId());
+
+            return pstmt.executeUpdate() > 0;
+
         } catch (SQLException e) {
             System.out.println("Error al actualizar ejercicio: " + e.getMessage());
             return false;
@@ -54,75 +64,78 @@ public class EjercicioRepository {
     }
 
     public boolean Eliminar(int idEjercicio) {
-        String sql = "DELETE FROM ejercicios WHERE id = ?";
-        
-        try (Connection conn = Database.conectar();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
+        String sql = "UPDATE ejercicio SET estado = 0 "
+                + "WHERE idEjercicio = ? AND estado = 1";
+
+        try (Connection conn = Database.conectar(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setInt(1, idEjercicio);
-            int filasAfectadas = pstmt.executeUpdate();
-            return filasAfectadas > 0;
-            
+
+            return pstmt.executeUpdate() > 0;
+
         } catch (SQLException e) {
-            System.out.println("Error al eliminar ejercicio: " + e.getMessage());
+            System.out.println("Error al desactivar ejercicio: " + e.getMessage());
             return false;
         }
     }
 
     public Ejercicio ConsultarPorId(int idEjercicio) {
-        String sql = "SELECT * FROM ejercicios WHERE id = ?";
-        Ejercicio ejercicio = null;
-        
-        try (Connection conn = Database.conectar();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            
+        String sql = "SELECT * FROM ejercicio "
+                + "WHERE idEjercicio = ? AND estado = 1";
+
+        try (Connection conn = Database.conectar(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setInt(1, idEjercicio);
+
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    ejercicio = new Ejercicio(
-                        rs.getInt("id"),
-                        rs.getString("nombre"),
-                        rs.getString("tipo_muscular"),
-                        rs.getInt("series"),
-                        rs.getInt("repeticiones"),
-                        rs.getInt("duracion"),
-                        rs.getBoolean("estado")
+                    return new Ejercicio(
+                            rs.getInt("idEjercicio"),
+                            rs.getString("nombre"),
+                            rs.getString("tipoMuscular"),
+                            rs.getInt("series"),
+                            rs.getInt("repeticiones"),
+                            rs.getInt("duracion"),
+                            rs.getBoolean("estado"),
+                            rs.getObject("idMn", Integer.class)
                     );
                 }
             }
-            
+
         } catch (SQLException e) {
-            System.out.println("Error al consultar ejercicio por ID: " + e.getMessage());
+            System.out.println("Error al consultar ejercicio: " + e.getMessage());
         }
-        
-        return ejercicio;
+
+        return null;
     }
 
     public ArrayList<Ejercicio> Listar() {
         ArrayList<Ejercicio> lista = new ArrayList<>();
-        String sql = "SELECT * FROM ejercicios";
-        
-        try (Connection conn = Database.conectar();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            
+
+        String sql = "SELECT * FROM ejercicio "
+                + "WHERE estado = 1 ORDER BY idEjercicio";
+
+        try (Connection conn = Database.conectar(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+
             while (rs.next()) {
-                Ejercicio e = new Ejercicio(
-                    rs.getInt("id"),
-                    rs.getString("nombre"),
-                    rs.getString("tipo_muscular"),
-                    rs.getInt("series"),
-                    rs.getInt("repeticiones"),
-                    rs.getInt("duracion"),
-                    rs.getBoolean("estado")
+                Ejercicio ejercicio = new Ejercicio(
+                        rs.getInt("idEjercicio"),
+                        rs.getString("nombre"),
+                        rs.getString("tipoMuscular"),
+                        rs.getInt("series"),
+                        rs.getInt("repeticiones"),
+                        rs.getInt("duracion"),
+                        rs.getBoolean("estado"),
+                        rs.getObject("idMn", Integer.class)
                 );
-                lista.add(e);
+
+                lista.add(ejercicio);
             }
-            
+
         } catch (SQLException e) {
             System.out.println("Error al listar ejercicios: " + e.getMessage());
         }
-        
+
         return lista;
     }
 }

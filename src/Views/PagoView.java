@@ -1,5 +1,5 @@
-
 package Views;
+
 import Controllers.MembController;
 import Controllers.PagoController;
 import Controllers.UsuarioController;
@@ -14,7 +14,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
 public class PagoView extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(PagoView.class.getName());
 
     private final PagoController pagoController = new PagoController();

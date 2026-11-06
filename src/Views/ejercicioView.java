@@ -1,5 +1,7 @@
 package Views;
 
+import Controllers.MaquinaController;
+import Models.Maquina;
 import Controllers.EjercicioController;
 import Models.Ejercicio;
 import java.util.ArrayList;
@@ -9,6 +11,13 @@ import javax.swing.table.DefaultTableModel;
 public class ejercicioView extends javax.swing.JFrame {
 
     private final EjercicioController ejercicioController = new EjercicioController();
+    private final MaquinaController maquinaController = new MaquinaController();
+
+    private final javax.swing.JComboBox<String> cmbMaquina
+            = new javax.swing.JComboBox<>();
+
+    private final javax.swing.JLabel lblMaquina
+            = new javax.swing.JLabel("Máquina");
     private int idEjercicioSeleccionado = 0;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(ejercicioView.class.getName());
 
@@ -16,6 +25,7 @@ public class ejercicioView extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(null);
         cargarEjercicios();
+        cargarMaquinas();
     }
 
     private void cargarEjercicios() {
@@ -39,6 +49,55 @@ public class ejercicioView extends javax.swing.JFrame {
                     "Error al cargar ejercicios: " + ex.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void cargarMaquinas() {
+        cmbMaquina.removeAllItems();
+        cmbMaquina.addItem("Sin máquina");
+
+        try {
+            for (Maquina maquina : maquinaController.Listar()) {
+                if (maquina.getEstado()) {
+                    cmbMaquina.addItem(
+                            maquina.getIdMn() + " - " + maquina.getNombre()
+                    );
+                }
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error al cargar máquinas: " + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    private Integer obtenerIdMaquinaSeleccionada() {
+        String seleccion = (String) cmbMaquina.getSelectedItem();
+
+        if (seleccion == null || seleccion.equals("Sin máquina")) {
+            return null;
+        }
+
+        return Integer.parseInt(seleccion.split(" - ", 2)[0]);
+    }
+
+    private void seleccionarMaquina(Integer idMn) {
+        cmbMaquina.setSelectedIndex(0);
+
+        if (idMn == null) {
+            return;
+        }
+
+        for (int i = 1; i < cmbMaquina.getItemCount(); i++) {
+            String opcion = cmbMaquina.getItemAt(i);
+
+            if (opcion.startsWith(idMn + " - ")) {
+                cmbMaquina.setSelectedIndex(i);
+                return;
+            }
         }
     }
 
@@ -95,6 +154,8 @@ public class ejercicioView extends javax.swing.JFrame {
         chkEstado.setFont(new java.awt.Font("Segoe UI", 1, 12));
         chkEstado.setSelected(true);
         chkEstado.setText("Activo");
+        lblMaquina.setFont(new java.awt.Font("Segoe UI", 1, 12));
+        cmbMaquina.setPreferredSize(new java.awt.Dimension(330, 32));
 
         btnGuardar.setText("Guardar");
         btnGuardar.addActionListener(this::btnGuardarActionPerformed);
@@ -112,15 +173,15 @@ public class ejercicioView extends javax.swing.JFrame {
         btnVolver.addActionListener(this::btnVolverActionPerformed);
 
         tblEjercicios.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
-            },
-            new String [] {
-                "ID", "Nombre", "Tipo muscular", "Series", "Repeticiones", "Duración", "Estado"
-            }
+                new Object[][]{
+                    {null, null, null, null, null, null, null},
+                    {null, null, null, null, null, null, null},
+                    {null, null, null, null, null, null, null},
+                    {null, null, null, null, null, null, null}
+                },
+                new String[]{
+                    "ID", "Nombre", "Tipo muscular", "Series", "Repeticiones", "Duración", "Estado"
+                }
         ));
         tblEjercicios.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -132,88 +193,94 @@ public class ejercicioView extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnGuardar)
-                .addGap(18, 18, 18)
-                .addComponent(btnActualizar)
-                .addGap(18, 18, 18)
-                .addComponent(btnEliminar)
-                .addGap(18, 18, 18)
-                .addComponent(btnLimpiar)
-                .addGap(18, 18, 18)
-                .addComponent(btnVolver)
-                .addGap(110, 110, 110))
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(lblNombre)
-                                    .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-                                    .addComponent(txtTelefono)
-                                    .addComponent(txtFechaNacimiento))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnGuardar)
                                 .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(lblPassword)
-                                    .addComponent(lblCorreo)
-                                    .addComponent(lblDocumento)
-                                    .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
-                                    .addComponent(txtCorreo)
-                                    .addComponent(txtDocumento)))
-                            .addComponent(lblTelefono)
-                            .addComponent(lblFechaNacimiento)
-                            .addComponent(chkEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 685, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(282, 282, 282)
-                        .addComponent(lblTitulo)))
-                .addContainerGap(27, Short.MAX_VALUE))
+                                .addComponent(btnActualizar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEliminar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnLimpiar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnVolver)
+                                .addGap(110, 110, 110))
+                        .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGap(29, 29, 29)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                        .addGroup(layout.createSequentialGroup()
+                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                                        .addComponent(lblNombre)
+                                                                        .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+                                                                        .addComponent(txtTelefono)
+                                                                        .addComponent(txtFechaNacimiento))
+                                                                .addGap(18, 18, 18)
+                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                                        .addComponent(lblPassword)
+                                                                        .addComponent(lblCorreo)
+                                                                        .addComponent(lblDocumento)
+                                                                        .addComponent(txtPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
+                                                                        .addComponent(txtCorreo)
+                                                                        .addComponent(txtDocumento)))
+                                                        .addComponent(lblTelefono)
+                                                        .addComponent(lblFechaNacimiento)
+                                                        .addComponent(lblMaquina)
+                                                        .addComponent(cmbMaquina, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(chkEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 685, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addGap(282, 282, 282)
+                                                .addComponent(lblTitulo)))
+                                .addContainerGap(27, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblTitulo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblNombre)
-                    .addComponent(lblDocumento))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtDocumento))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblCorreo)
-                    .addComponent(lblTelefono))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtTelefono)
-                    .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblFechaNacimiento)
-                    .addComponent(lblPassword))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(chkEstado)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnGuardar)
-                    .addComponent(btnActualizar)
-                    .addComponent(btnEliminar)
-                    .addComponent(btnLimpiar)
-                    .addComponent(btnVolver))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32))
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(lblTitulo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblNombre)
+                                        .addComponent(lblDocumento))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtDocumento))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblCorreo)
+                                        .addComponent(lblTelefono))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtTelefono)
+                                        .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(lblFechaNacimiento)
+                                        .addComponent(lblPassword))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addComponent(lblMaquina)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cmbMaquina, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(chkEstado)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(btnGuardar)
+                                        .addComponent(btnActualizar)
+                                        .addComponent(btnEliminar)
+                                        .addComponent(btnLimpiar)
+                                        .addComponent(btnVolver))
+                                .addGap(18, 18, 18)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(32, 32, 32))
         );
 
         pack();
@@ -235,7 +302,18 @@ public class ejercicioView extends javax.swing.JFrame {
             int duracion = Integer.parseInt(txtFechaNacimiento.getText().trim());
             boolean estado = chkEstado.isSelected();
 
-            Ejercicio nuevoEjercicio = new Ejercicio(id, nombre, tipo, series, repeticiones, duracion, estado);
+            Integer idMn = obtenerIdMaquinaSeleccionada();
+
+            Ejercicio nuevoEjercicio = new Ejercicio(
+                    id,
+                    nombre,
+                    tipo,
+                    series,
+                    repeticiones,
+                    duracion,
+                    estado,
+                    idMn
+            );
             boolean guardado = ejercicioController.guardar(nuevoEjercicio);
 
             if (guardado) {
@@ -247,6 +325,7 @@ public class ejercicioView extends javax.swing.JFrame {
                 txtFechaNacimiento.setText("");
                 txtPassword.setText("");
                 chkEstado.setSelected(true);
+                cmbMaquina.setSelectedIndex(0);
                 cargarEjercicios();
             } else {
                 JOptionPane.showMessageDialog(this, "No se pudo registrar el ejercicio.", "Validación", JOptionPane.WARNING_MESSAGE);
@@ -267,6 +346,15 @@ public class ejercicioView extends javax.swing.JFrame {
             idEjercicioSeleccionado = Integer.parseInt(
                     tblEjercicios.getModel().getValueAt(filaModelo, 0).toString()
             );
+
+            Ejercicio ejercicioSeleccionado
+                    = ejercicioController.consultarPorId(idEjercicioSeleccionado);
+
+            if (ejercicioSeleccionado != null) {
+                seleccionarMaquina(ejercicioSeleccionado.getIdMn());
+            } else {
+                cmbMaquina.setSelectedIndex(0);
+            }
 
             txtPassword.setText(String.valueOf(idEjercicioSeleccionado));
             txtNombre.setText(
@@ -307,7 +395,18 @@ public class ejercicioView extends javax.swing.JFrame {
             int duracion = Integer.parseInt(txtFechaNacimiento.getText().trim());
             boolean estado = chkEstado.isSelected();
 
-            Ejercicio ejercicioActualizado = new Ejercicio(id, nombre, tipo, series, repeticiones, duracion, estado);
+            Integer idMn = obtenerIdMaquinaSeleccionada();
+
+            Ejercicio ejercicioActualizado = new Ejercicio(
+                    id,
+                    nombre,
+                    tipo,
+                    series,
+                    repeticiones,
+                    duracion,
+                    estado,
+                    idMn
+            );
             boolean actualizado = ejercicioController.actualizar(ejercicioActualizado);
 
             if (actualizado) {
@@ -320,6 +419,7 @@ public class ejercicioView extends javax.swing.JFrame {
                 txtFechaNacimiento.setText("");
                 txtPassword.setText("");
                 chkEstado.setSelected(true);
+                cmbMaquina.setSelectedIndex(0);
                 cargarEjercicios();
             } else {
                 JOptionPane.showMessageDialog(this, "No se pudo actualizar el ejercicio.");
@@ -363,6 +463,7 @@ public class ejercicioView extends javax.swing.JFrame {
                 txtFechaNacimiento.setText("");
                 txtPassword.setText("");
                 chkEstado.setSelected(true);
+                cmbMaquina.setSelectedIndex(0);
                 cargarEjercicios();
             } else {
                 JOptionPane.showMessageDialog(this, "No se pudo eliminar el ejercicio.");
@@ -384,6 +485,7 @@ public class ejercicioView extends javax.swing.JFrame {
         txtFechaNacimiento.setText("");
         txtPassword.setText("");
         chkEstado.setSelected(true);
+        cmbMaquina.setSelectedIndex(0);
         idEjercicioSeleccionado = 0;
         tblEjercicios.clearSelection();
         txtNombre.requestFocusInWindow();
