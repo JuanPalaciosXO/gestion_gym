@@ -12,7 +12,7 @@ public class StockSupView extends javax.swing.JFrame {
     public StockSupView() {
         initComponents();
         controller = new ReporteSupController();
-        cargarDatosStockBajo();
+
     }
     private void cargarDatosStockBajo() {
         DefaultTableModel modelo = (DefaultTableModel) modeloTabla.getModel();

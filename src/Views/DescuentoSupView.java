@@ -69,7 +69,7 @@ public class DescuentoSupView extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         btnVolver1 = new javax.swing.JButton();
-        txtPorcentaje = new javax.swing.JLabel();
+        txtPorcentaje = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -97,8 +97,6 @@ public class DescuentoSupView extends javax.swing.JFrame {
         btnVolver1.setText("Volver");
         btnVolver1.addActionListener(this::btnVolver1ActionPerformed);
 
-        txtPorcentaje.setText("Valor");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -111,9 +109,9 @@ public class DescuentoSupView extends javax.swing.JFrame {
                         .addGap(105, 105, 105)
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(151, 151, 151)
-                        .addComponent(txtPorcentaje, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(202, 202, 202)
+                        .addGap(193, 193, 193)
+                        .addComponent(txtPorcentaje, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(184, 184, 184)
                         .addComponent(btnSimular))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(66, 66, 66)
@@ -133,7 +131,7 @@ public class DescuentoSupView extends javax.swing.JFrame {
                 .addGap(47, 47, 47)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSimular)
-                    .addComponent(txtPorcentaje))
+                    .addComponent(txtPorcentaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(40, 40, 40)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(111, Short.MAX_VALUE))
@@ -158,6 +156,6 @@ public class DescuentoSupView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JLabel txtPorcentaje;
+    private javax.swing.JTextField txtPorcentaje;
     // End of variables declaration//GEN-END:variables
 }
