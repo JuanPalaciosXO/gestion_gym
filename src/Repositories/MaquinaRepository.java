@@ -35,9 +35,10 @@ public class MaquinaRepository {
     public List<Maquina> Traer() {
         List<Maquina> lista = new ArrayList<>();
         Connection conexion = Database.conectar();
-        String sql = "SELECT idMn, nombre, tipo, estado, ubicacion, descripcion FROM maquina WHERE estado = 1";
+        String sql = "SELECT idMn, nombre, tipo, estado, ubicacion, descripcion FROM maquina";
 
-        try (PreparedStatement stmt = conexion.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+        try (PreparedStatement stmt = conexion.prepareStatement(sql); 
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 Maquina m = new Maquina();
@@ -105,17 +106,46 @@ public class MaquinaRepository {
         }
     }
 
-    public boolean Eliminar(int idMn) {
-        Connection conexion = Database.conectar();
-        if (conexion == null) {
-            return false;
-        }
+    public List<Maquina> Buscar(String texto) {
+    List<Maquina> lista = new ArrayList<>();
+    Connection conexion = Database.conectar();
+    String sql = "SELECT idMn, nombre, tipo, estado, ubicacion, descripcion FROM maquina "
+               + "WHERE nombre LIKE ? OR tipo LIKE ? OR ubicacion LIKE ?";
 
-        String sql = "UPDATE maquina SET estado = 0 WHERE idMn = ? AND estado = 1";
+    try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        String filtro = "%" + texto + "%";
+        stmt.setString(1, filtro);
+        stmt.setString(2, filtro);
+        stmt.setString(3, filtro);
+
+        try (ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Maquina m = new Maquina();
+                m.setIdMn(rs.getInt("idMn"));
+                m.setNombre(rs.getString("nombre"));
+                m.setTipo(rs.getString("tipo"));
+                m.setEstado(rs.getBoolean("estado"));
+                m.setUbicacion(rs.getString("ubicacion"));
+                m.setDescripcion(rs.getString("descripcion"));
+                lista.add(m);
+            }
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al buscar máquinas: " + e.getMessage());
+    } finally {
+        Database.desconectar(conexion);
+    }
+        return lista;
+    }
+    
+    public boolean desactivar(int idMn) {
+    Connection conexion = Database.conectar();
+    String sql = "UPDATE maquina SET estado = 0 WHERE idMn = ?";
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setInt(1, idMn);
-            return stmt.executeUpdate() > 0;
+            int filasAfectadas = stmt.executeUpdate();
+            return filasAfectadas > 0;
         } catch (SQLException e) {
             System.out.println("Error al desactivar máquina: " + e.getMessage());
             return false;

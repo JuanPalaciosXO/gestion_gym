@@ -2,6 +2,7 @@ package Services;
 
 import Models.Maquina;
 import Repositories.MaquinaRepository;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MaquinaService {
@@ -44,13 +45,6 @@ public class MaquinaService {
         return this.repository.Actualizar(maquina);
     }
 
-    public boolean Eliminar(int idMn) {
-        if (!existe(idMn)) {
-            throw new IllegalArgumentException("No se puede eliminar: El ID especificado no existe.");
-        }
-        return this.repository.Eliminar(idMn);
-    }
-    
     public Maquina ConsultarPorId(int idMn) { 
         return this.repository.ConsultarPorId(idMn);
     }
@@ -58,16 +52,33 @@ public class MaquinaService {
     public List<Maquina> Listar() {
         return this.repository.Traer();
     }
+    
+    public List<Maquina> buscarMaquinas(String texto) {
+    if (texto == null || texto.trim().isEmpty()) {
+        return repository.Traer();
+    }
+        return repository.Buscar(texto.trim());
+    }
+    
+    public boolean desactivar(int idMn) {
+        return repository.desactivar(idMn);
+    }
+    
+    public List<Maquina> buscar(String texto) {
+        return repository.Buscar(texto);
+    }
 
     private void validar(Maquina maquina) {
-    if (maquina == null) {
-        throw new IllegalArgumentException("La máquina no puede ser nula.");
+        if (maquina == null) {
+            throw new IllegalArgumentException("La máquina no puede ser nula.");
+        }
+        if (maquina.getNombre() == null || maquina.getNombre().trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre es obligatorio.");
+        }
+        if (maquina.getUbicacion() == null || maquina.getUbicacion().trim().isEmpty()) {
+            throw new IllegalArgumentException("La ubicación es obligatoria.");
+        }
     }
-    if (maquina.getNombre() == null || maquina.getNombre().trim().isEmpty()) {
-        throw new IllegalArgumentException("El nombre es obligatorio.");
-    }
-    if (maquina.getUbicacion() == null || maquina.getUbicacion().trim().isEmpty()) {
-        throw new IllegalArgumentException("La ubicación es obligatoria.");
-    }
-    }
+    
+    
 }

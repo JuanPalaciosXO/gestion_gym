@@ -47,11 +47,8 @@ public class SupleService {
         return this.repository.Actualizar(suplemento);
     }
 
-    public boolean Eliminar(int idSu) {
-        if (!existe(idSu)) {
-            throw new IllegalArgumentException("No se puede eliminar: El ID especificado no existe.");
-        }
-        return this.repository.Eliminar(idSu);
+    public void desactivarSuplemento(int idSu) {
+        repository.desactivar(idSu);
     }
     
     public Suplemento ConsultarPorId(int idSu) {

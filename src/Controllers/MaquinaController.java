@@ -4,8 +4,9 @@ import Models.Maquina;
 import java.util.List;
 import Services.MaquinaService;
 
-public class MaquinaController {
 
+public class MaquinaController {
+;
     private MaquinaService service;
 
     public MaquinaController() {
@@ -21,9 +22,6 @@ public class MaquinaController {
         return this.service.Actualizar(maquina);
     }
 
-    public boolean Eliminar(int idMn) {
-        return this.service.Eliminar(idMn);
-    }
 
     public Maquina consultarPorId(int id) {
         return this.service.ConsultarPorId(id);
@@ -31,6 +29,14 @@ public class MaquinaController {
 
     public List<Maquina> Listar() {
         return service.Listar();
+    }
+    
+    public List<Maquina> buscar(String texto) {
+        return service.buscar(texto);
+    }
+
+    public boolean desactivar(int idMn) {
+        return service.desactivar(idMn);
     }
 
 }

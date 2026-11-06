@@ -21,8 +21,8 @@ public class SuplementoController {
         return this.service.Actualizar(suplemento);
     }
     
-    public boolean Eliminar(int idSu){
-        return this.service.Eliminar(idSu);
+    public void desactivar(int idSu) {
+        service.desactivarSuplemento(idSu);
     }
     
     public Suplemento consultarPorId(int idSu) {

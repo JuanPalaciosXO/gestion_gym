@@ -109,23 +109,21 @@ public class SuplementoRepository {
             Database.desconectar(conexion);
         }
     }
-
-    public boolean Eliminar(int idSu) {
-        Connection conexion = Database.conectar();
-        if (conexion == null) {
-            return false;
-        }
-
-        String sql = "UPDATE suplemento SET estado = 0 WHERE idSu = ? AND estado = 1";
+    
+    public boolean desactivar(int idMn) {
+        Connection conexion = DB.Database.conectar();
+        String sql = "UPDATE maquina SET estado = 0 WHERE idMn = ?";
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            stmt.setInt(1, idSu);
-            return stmt.executeUpdate() > 0;
+            stmt.setInt(1, idMn);
+            int filasAfectadas = stmt.executeUpdate();
+            return filasAfectadas > 0;
         } catch (SQLException e) {
-            System.out.println("Error al desactivar suplemento: " + e.getMessage());
+            System.out.println("Error al desactivar máquina: " + e.getMessage());
             return false;
         } finally {
-            Database.desconectar(conexion);
+            DB.Database.desconectar(conexion);
         }
     }
+    
 }

@@ -68,5 +68,8 @@ public class Maquina {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-
+    
+    private String estadoOperativo;
+    public String getEstadoOperativo() { return estadoOperativo; }
+    public void setEstadoOperativo(String estadoOperativo) { this.estadoOperativo = estadoOperativo; }
 }
