@@ -18,6 +18,207 @@ public class EntrenadorView extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         cargarEntrenadores();
     }
+    
+    private void contarRutinasEntrenador() {
+    if (idEntrenadorSeleccionado == 0) {
+        JOptionPane.showMessageDialog(this, "Primero selecciona un entrenador de la tabla.");
+        return;
+    }
+
+    String sql = "SELECT COUNT(*) AS total FROM rutina "
+            + "WHERE idEntrenador = ? AND estado = 1";
+
+    java.sql.Connection conexion = DB.Database.conectar();
+
+    if (conexion == null) {
+        JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
+        return;
+    }
+
+    try (java.sql.PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        stmt.setInt(1, idEntrenadorSeleccionado);
+
+        try (java.sql.ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                int total = rs.getInt("total");
+
+                JOptionPane.showMessageDialog(this,
+                        "Entrenador: " + txtNombre.getText()
+                        + "\nRutinas activas asignadas: " + total,
+                        "Estadísticas del entrenador",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+    } catch (java.sql.SQLException ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al contar rutinas: " + ex.getMessage());
+    } finally {
+        DB.Database.desconectar(conexion);
+    }
+}
+    
+    private void contarAlumnosEntrenador() {
+    if (idEntrenadorSeleccionado == 0) {
+        JOptionPane.showMessageDialog(this, "Primero selecciona un entrenador de la tabla.");
+        return;
+    }
+
+    String sql = "SELECT COUNT(DISTINCT u.idUsuario) AS total "
+            + "FROM usuarios u "
+            + "INNER JOIN usuario_rutina ur ON u.idUsuario = ur.idUsuario "
+            + "INNER JOIN rutina r ON ur.idRutina = r.idRutina "
+            + "WHERE r.idEntrenador = ? "
+            + "AND r.estado = 1 AND u.estado = 1";
+
+    java.sql.Connection conexion = DB.Database.conectar();
+
+    if (conexion == null) {
+        JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
+        return;
+    }
+
+    try (java.sql.PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        stmt.setInt(1, idEntrenadorSeleccionado);
+
+        try (java.sql.ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                int total = rs.getInt("total");
+
+                JOptionPane.showMessageDialog(this,
+                        "Entrenador: " + txtNombre.getText()
+                        + "\nAlumnos activos asignados: " + total,
+                        "Alumnos del entrenador",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+    } catch (java.sql.SQLException ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al contar alumnos: " + ex.getMessage());
+    } finally {
+        DB.Database.desconectar(conexion);
+    }
+}
+    
+    private void analizarNivelesEntrenador() {
+    if (idEntrenadorSeleccionado == 0) {
+        JOptionPane.showMessageDialog(this, "Primero selecciona un entrenador.");
+        return;
+    }
+
+    String sql = "SELECT nivel, COUNT(*) AS total "
+            + "FROM rutina "
+            + "WHERE idEntrenador = ? AND estado = 1 "
+            + "GROUP BY nivel";
+
+    java.sql.Connection conexion = DB.Database.conectar();
+
+    if (conexion == null) {
+        JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
+        return;
+    }
+
+    int principiantes = 0;
+    int intermedios = 0;
+    int avanzados = 0;
+    int sinNivel = 0;
+
+    try (java.sql.PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        stmt.setInt(1, idEntrenadorSeleccionado);
+
+        try (java.sql.ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                String nivel = rs.getString("nivel");
+                int total = rs.getInt("total");
+
+                if (nivel == null) {
+                    sinNivel += total;
+                } else {
+                    switch (nivel.trim().toLowerCase()) {
+                        case "principiante":
+                            principiantes += total;
+                            break;
+                        case "intermedio":
+                            intermedios += total;
+                            break;
+                        case "avanzado":
+                            avanzados += total;
+                            break;
+                        default:
+                            sinNivel += total;
+                    }
+                }
+            }
+        }
+
+        int totalRutinas = principiantes + intermedios + avanzados + sinNivel;
+
+        JOptionPane.showMessageDialog(this,
+                "Entrenador: " + txtNombre.getText()
+                + "\n\nPrincipiante: " + principiantes
+                + "\nIntermedio: " + intermedios
+                + "\nAvanzado: " + avanzados
+                + "\nSin nivel reconocido: " + sinNivel
+                + "\n\nTotal de rutinas activas: " + totalRutinas,
+                "Análisis de niveles",
+                JOptionPane.INFORMATION_MESSAGE);
+
+    } catch (java.sql.SQLException ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al analizar niveles: " + ex.getMessage());
+    } finally {
+        DB.Database.desconectar(conexion);
+    }
+}
+    
+    private void calcularCargaEntrenamiento() {
+    if (idEntrenadorSeleccionado == 0) {
+        JOptionPane.showMessageDialog(this, "Primero selecciona un entrenador.");
+        return;
+    }
+
+    String sql = "SELECT COUNT(DISTINCT r.idRutina) AS rutinas, "
+            + "COUNT(re.idEjercicio) AS ejercicios, "
+            + "COALESCE(SUM(e.series), 0) AS totalSeries, "
+            + "COALESCE(SUM(e.series * e.repeticiones), 0) AS totalRepeticiones "
+            + "FROM rutina r "
+            + "LEFT JOIN rutina_ejercicio re ON r.idRutina = re.idRutina "
+            + "LEFT JOIN ejercicio e ON re.idEjercicio = e.idEjercicio AND e.estado = 1 "
+            + "WHERE r.idEntrenador = ? AND r.estado = 1";
+
+    java.sql.Connection conexion = DB.Database.conectar();
+
+    if (conexion == null) {
+        JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
+        return;
+    }
+
+    try (java.sql.PreparedStatement stmt = conexion.prepareStatement(sql)) {
+        stmt.setInt(1, idEntrenadorSeleccionado);
+
+        try (java.sql.ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                int rutinas = rs.getInt("rutinas");
+                int ejercicios = rs.getInt("ejercicios");
+                int series = rs.getInt("totalSeries");
+                int repeticiones = rs.getInt("totalRepeticiones");
+
+                JOptionPane.showMessageDialog(this,
+                        "Entrenador: " + txtNombre.getText()
+                        + "\nRutinas activas: " + rutinas
+                        + "\nEjercicios asignados: " + ejercicios
+                        + "\nTotal de series: " + series
+                        + "\nTotal de repeticiones: " + repeticiones,
+                        "Carga de entrenamiento",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+    } catch (java.sql.SQLException ex) {
+        JOptionPane.showMessageDialog(this,
+                "Error al calcular carga: " + ex.getMessage());
+    } finally {
+        DB.Database.desconectar(conexion);
+    }
+}
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -42,6 +243,10 @@ public class EntrenadorView extends javax.swing.JFrame {
         txtDocumento = new javax.swing.JTextField();
         btnActualizar = new javax.swing.JButton();
         btnVolver = new javax.swing.JButton();
+        btnContarRutinas = new javax.swing.JButton();
+        btnContarAlumnos = new javax.swing.JButton();
+        btnAnalizarNiveles = new javax.swing.JButton();
+        btnCalcularCarga = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -50,6 +255,8 @@ public class EntrenadorView extends javax.swing.JFrame {
 
         btnEliminar.setText("Eliminar");
         btnEliminar.addActionListener(this::btnEliminarActionPerformed);
+
+        txtTelefono.addActionListener(this::txtTelefonoActionPerformed);
 
         btnLimpiar.setText("Limpiar");
         btnLimpiar.addActionListener(this::btnLimpiarActionPerformed);
@@ -89,6 +296,7 @@ public class EntrenadorView extends javax.swing.JFrame {
         chkEstado.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         chkEstado.setSelected(true);
         chkEstado.setText("Activo");
+        chkEstado.addActionListener(this::chkEstadoActionPerformed);
 
         lblDocumento.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblDocumento.setText("Documento");
@@ -102,45 +310,71 @@ public class EntrenadorView extends javax.swing.JFrame {
         btnVolver.setText("Volver");
         btnVolver.addActionListener(this::btnVolverActionPerformed);
 
+        btnContarRutinas.setText("Contar rutinas");
+        btnContarRutinas.addActionListener(this::btnContarRutinasActionPerformed);
+
+        btnContarAlumnos.setText("Contar alumnos");
+        btnContarAlumnos.addActionListener(this::btnContarAlumnosActionPerformed);
+
+        btnAnalizarNiveles.setText("Analizar niveles");
+        btnAnalizarNiveles.addActionListener(this::btnAnalizarNivelesActionPerformed);
+
+        btnCalcularCarga.setText("Calcular carga");
+        btnCalcularCarga.addActionListener(this::btnCalcularCargaActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(29, 29, 29)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(lblNombre)
-                                    .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-                                    .addComponent(txtTelefono)
-                                    .addComponent(txtEspecialidad))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(lblCorreo)
-                                    .addComponent(lblDocumento)
-                                    .addComponent(txtDocumento, javax.swing.GroupLayout.DEFAULT_SIZE, 318, Short.MAX_VALUE)
-                                    .addComponent(txtCorreo)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lblNombre)
+                            .addComponent(txtTelefono, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
                             .addComponent(lblTelefono)
                             .addComponent(lblEspecialidad)
-                            .addComponent(chkEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 685, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtNombre)
+                            .addComponent(txtEspecialidad))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(lblDocumento)
+                                .addGap(308, 308, 308))
+                            .addComponent(txtDocumento)
+                            .addComponent(lblCorreo)
+                            .addComponent(txtCorreo)))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(282, 282, 282)
-                        .addComponent(lblTitulo))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(128, 128, 128)
-                        .addComponent(btnGuardar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnActualizar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnEliminar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnLimpiar)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnVolver)))
+                        .addComponent(chkEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblTitulo)
+                        .addGap(308, 308, 308)))
+                .addGap(34, 34, 34))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(184, 184, 184)
+                .addComponent(btnContarRutinas)
+                .addGap(18, 18, 18)
+                .addComponent(btnContarAlumnos)
+                .addGap(18, 18, 18)
+                .addComponent(btnAnalizarNiveles)
+                .addGap(18, 18, 18)
+                .addComponent(btnCalcularCarga)
+                .addGap(0, 211, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(207, 207, 207)
+                .addComponent(btnGuardar)
+                .addGap(18, 18, 18)
+                .addComponent(btnActualizar)
+                .addGap(18, 18, 18)
+                .addComponent(btnEliminar)
+                .addGap(18, 18, 18)
+                .addComponent(btnLimpiar)
+                .addGap(18, 18, 18)
+                .addComponent(btnVolver)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -154,32 +388,39 @@ public class EntrenadorView extends javax.swing.JFrame {
                     .addComponent(lblDocumento))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtDocumento))
+                    .addComponent(txtDocumento, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblCorreo)
-                    .addComponent(lblTelefono))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtTelefono)
-                    .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblCorreo)
+                            .addComponent(lblTelefono))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(lblEspecialidad)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtEspecialidad, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(chkEstado)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(txtEspecialidad, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(38, 38, 38)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnGuardar)
-                    .addComponent(btnActualizar)
-                    .addComponent(btnEliminar)
-                    .addComponent(btnLimpiar)
-                    .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32))
+                    .addComponent(btnContarRutinas, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnContarAlumnos, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAnalizarNiveles, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCalcularCarga, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(29, 29, 29)
+                .addComponent(chkEstado)
+                .addGap(33, 33, 33)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnActualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnEliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(38, 38, 38)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         pack();
@@ -283,6 +524,30 @@ public class EntrenadorView extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_btnVolverActionPerformed
 
+    private void txtTelefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTelefonoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtTelefonoActionPerformed
+
+    private void chkEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkEstadoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_chkEstadoActionPerformed
+
+    private void btnContarRutinasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContarRutinasActionPerformed
+        contarRutinasEntrenador();
+    }//GEN-LAST:event_btnContarRutinasActionPerformed
+
+    private void btnContarAlumnosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContarAlumnosActionPerformed
+        contarAlumnosEntrenador();
+    }//GEN-LAST:event_btnContarAlumnosActionPerformed
+
+    private void btnAnalizarNivelesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarNivelesActionPerformed
+        analizarNivelesEntrenador();
+    }//GEN-LAST:event_btnAnalizarNivelesActionPerformed
+
+    private void btnCalcularCargaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcularCargaActionPerformed
+        calcularCargaEntrenamiento();
+    }//GEN-LAST:event_btnCalcularCargaActionPerformed
+
     private void cargarEntrenadores() {
         try {
             DefaultTableModel modelo = (DefaultTableModel) tblEntrenadores.getModel();
@@ -363,6 +628,10 @@ public class EntrenadorView extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnAnalizarNiveles;
+    private javax.swing.JButton btnCalcularCarga;
+    private javax.swing.JButton btnContarAlumnos;
+    private javax.swing.JButton btnContarRutinas;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;

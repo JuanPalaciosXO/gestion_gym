@@ -23,63 +23,70 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              <Component id="btnGuardar" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="btnActualizar" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="btnEliminar" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="btnLimpiar" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Component id="btnVolver" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="201" max="-2" attributes="0"/>
+          </Group>
           <Group type="102" attributes="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="282" max="-2" attributes="0"/>
-                      <Component id="lblTitulo" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
+                  <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="chkEstado" alignment="0" min="-2" pref="84" max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" alignment="0" min="-2" pref="685" max="-2" attributes="0"/>
-                          <Component id="lblRutina" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="cmbRutina" alignment="0" max="32767" attributes="0"/>
+                              <Component id="btnAsignarRutina" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="btnVerRutinas" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="btnQuitarRutina" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="btnCalcularEdad" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="btnVerificarMembresia" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="btnDiasRestantes" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="btnAlertaVencimiento" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="lblNombre" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="txtNombre" alignment="0" pref="330" max="32767" attributes="0"/>
                                   <Component id="lblTelefono" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtNombre" pref="390" max="32767" attributes="0"/>
+                                  <Component id="txtTelefono" max="32767" attributes="0"/>
+                                  <Component id="lblRutina" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="cmbRutina" alignment="0" min="-2" pref="330" max="-2" attributes="0"/>
                                   <Component id="lblFechaNacimiento" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="txtTelefono" alignment="0" max="32767" attributes="0"/>
                                   <Component id="txtFechaNacimiento" alignment="0" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="lblPassword" min="-2" max="-2" attributes="0"/>
-                                      <Component id="lblCorreo" alignment="0" min="-2" max="-2" attributes="0"/>
-                                      <Component id="txtPassword" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="txtCorreo" alignment="0" min="-2" pref="337" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Component id="lblDocumento" min="-2" max="-2" attributes="0"/>
-                                  <Component id="txtDocumento" alignment="0" min="-2" pref="337" max="-2" attributes="0"/>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Component id="btnAsignarRutina" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="btnVerRutinas" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="btnQuitarRutina" min="-2" max="-2" attributes="0"/>
-                                  </Group>
+                                  <Component id="txtPassword" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="lblPassword" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtDocumento" max="32767" attributes="0"/>
+                                  <Component id="lblDocumento" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txtCorreo" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="lblCorreo" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="113" max="-2" attributes="0"/>
-                              <Component id="btnGuardar" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="btnActualizar" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="btnEliminar" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="btnLimpiar" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="btnVolver" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="350" max="-2" attributes="0"/>
+                      <Component id="lblTitulo" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
-              <EmptySpace pref="27" max="32767" attributes="0"/>
+              <EmptySpace pref="28" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -89,59 +96,65 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="lblTitulo" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="lblNombre" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="lblDocumento" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="txtNombre" pref="38" max="32767" attributes="0"/>
-                  <Component id="txtDocumento" max="32767" attributes="0"/>
-              </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="lblCorreo" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="lblTelefono" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="txtTelefono" max="32767" attributes="0"/>
-                  <Component id="txtCorreo" min="-2" pref="32" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="lblFechaNacimiento" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="lblPassword" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="txtPassword" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
-                  <Component id="txtFechaNacimiento" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lblNombre" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblDocumento" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="txtNombre" pref="38" max="32767" attributes="0"/>
+                          <Component id="txtDocumento" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="lblCorreo" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblTelefono" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="txtCorreo" pref="46" max="32767" attributes="0"/>
+                          <Component id="txtTelefono" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="lblFechaNacimiento" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                      <Component id="txtFechaNacimiento" min="-2" pref="42" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Component id="lblPassword" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="txtPassword" min="-2" pref="44" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="lblRutina" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="btnQuitarRutina" alignment="1" pref="35" max="32767" attributes="0"/>
-                  <Component id="btnAsignarRutina" max="32767" attributes="0"/>
-                  <Component id="cmbRutina" max="32767" attributes="0"/>
-                  <Component id="btnVerRutinas" alignment="1" max="32767" attributes="0"/>
+              <Component id="cmbRutina" min="-2" pref="46" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="btnAsignarRutina" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
+                  <Component id="btnVerRutinas" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
+                  <Component id="btnQuitarRutina" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
+                  <Component id="btnCalcularEdad" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
+                  <Component id="btnVerificarMembresia" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
+                  <Component id="btnDiasRestantes" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
+                  <Component id="btnAlertaVencimiento" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="28" max="32767" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="chkEstado" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="btnVolver" alignment="0" min="-2" pref="22" max="-2" attributes="0"/>
-                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                      <Component id="btnGuardar" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="btnActualizar" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="btnEliminar" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="btnLimpiar" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="btnGuardar" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnActualizar" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnEliminar" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnLimpiar" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnVolver" alignment="3" min="-2" pref="22" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="83" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+              <EmptySpace pref="32" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -197,6 +210,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtCorreo">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtCorreoActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblFechaNacimiento">
       <Properties>
@@ -384,6 +400,38 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnQuitarRutinaActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnCalcularEdad">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Calcular edad"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCalcularEdadActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnVerificarMembresia">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Verificar membres&#xed;a"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnVerificarMembresiaActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnDiasRestantes">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="D&#xed;as restantes"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnDiasRestantesActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnAlertaVencimiento">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Alerta vencimiento"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAlertaVencimientoActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
