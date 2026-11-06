@@ -7,28 +7,28 @@ import java.util.List;
 
 public class ReporteMaquinaService {
     
-    private final ReporteMaquinaRepository repo = new ReporteMaquinaRepository();
+    private final ReporteMaquinaRepository repository = new ReporteMaquinaRepository();
 
     public int obtenerConteoMaquinas(int estado) {
-        return repo.obtenerConteoMaquinas(estado);
+        return repository.obtenerConteoMaquinas(estado);
     }
 
     public int contarTotalMaquinas() {
-        return repo.obtenerConteoMaquinas(1) + repo.obtenerConteoMaquinas(0);
+        return repository.obtenerConteoMaquinas(1) + repository.obtenerConteoMaquinas(0);
     }
 
     public boolean activarMaquina(int idMn) {
-        return repo.cambiarEstadoMaquina(idMn, true);
+        return repository.cambiarEstadoMaquina(idMn, true);
     }
 
     public double calcularPorcentajeUtilizacion() {
-        int activas = repo.obtenerConteoMaquinas(1);
+        int activas = repository.obtenerConteoMaquinas(1);
         if (activas == 0) return 0;
-        return repo.contarConEjercicios() * 100.0 / activas;
+        return repository.contarConEjercicios() * 100.0 / activas;
     }
 
     public List<Maquina> listarMaquinasSinUso() {
-        List<Object[]> resultados = repo.obtenerMaquinasSinUso();
+        List<Object[]> resultados = repository.obtenerMaquinasSinUso();
         List<Maquina> listaMaquinas = new ArrayList<>();
         
         for (Object[] fila : resultados) {
@@ -44,13 +44,13 @@ public class ReporteMaquinaService {
     }
 
     public List<Object[]> frecuenciaUso() {
-        return repo.frecuenciaUso(0, "DESC");
+        return repository.frecuenciaUso(0, "DESC");
     }
     
     public List<Object[]> masUtilizadas() {
         List<Object[]> ranking = new ArrayList<>();
         int pos = 1;
-        for (Object[] f : repo.frecuenciaUso(5, "DESC")) {
+        for (Object[] f : repository.frecuenciaUso(5, "DESC")) {
             int veces = ((Number) f[3]).intValue();
             String clasificacion = veces >= 5 ? "Alta" : (veces >= 2 ? "Media" : "Baja");
             ranking.add(new Object[]{pos++, f[0], f[1], veces, clasificacion});
@@ -59,7 +59,7 @@ public class ReporteMaquinaService {
     }
 
     public String obtenerMaquinaMasUsada() {
-        List<Object[]> lista = repo.frecuenciaUso(1, "DESC");
+        List<Object[]> lista = repository.frecuenciaUso(1, "DESC");
         if (!lista.isEmpty()) {
             return (String) lista.get(0)[0];
         }
@@ -67,7 +67,7 @@ public class ReporteMaquinaService {
     }
 
     public String obtenerMaquinaMenosUsada() {
-        List<Object[]> lista = repo.frecuenciaUso(1, "ASC");
+        List<Object[]> lista = repository.frecuenciaUso(1, "ASC");
         if (!lista.isEmpty()) {
             return (String) lista.get(0)[0];
         }
@@ -75,11 +75,11 @@ public class ReporteMaquinaService {
     }
     
     public List<Object[]> listarMaquinasSinEjercicios() {
-        return repo.sinEjercicios();
+        return repository.sinEjercicios();
     }
 
     public List<Object[]> obtenerHistorialActividad() {
-        return repo.obtenerHistorialActividad();
+        return repository.obtenerHistorialActividad();
     }
 
 }
