@@ -27,9 +27,6 @@ public class MembresiaService {
         if (Double.isNaN(m.precio()) || m.precio() <= 0) {
             return "El precio debe ser mayor que 0";
         }
-        if (m.getDuracionmes() <= 0) {
-            return "La duración debe ser de al menos 1 mes";
-        }
         if (m.getDescripcion() != null && m.getDescripcion().length() > 255) {
             return "La descripción no puede superar los 255 caracteres";
         }
@@ -86,18 +83,23 @@ public class MembresiaService {
         return ok;
     }
     
-    public boolean Eliminar(int idMemb){
+     public boolean Eliminar(int idMemb){
         if (idMemb <= 0) {
             System.out.println("No se pudo eliminar la membresía: el id debe ser mayor que 0");
             return false;
         }
-        if (this.repository.ConsultarPorId(idMemb) == null) {
-            System.out.println("No se pudo eliminar la membresía: no existe ese id");
+        Membresia existente = this.repository.ConsultarPorId(idMemb);
+        if (existente == null) {
+            System.out.println("No se pudo inactivar la membresía: no existe ese id");
+            return false;
+        }
+        if (!existente.getEstado()) {
+            System.out.println("La membresía ya está inactiva");
             return false;
         }
         boolean ok = this.repository.Eliminar(idMemb);
         if (ok) {
-            System.out.println("El tipo de membresia se ha eliminado exitosamente");
+            System.out.println("La membresía se ha inactivado exitosamente");
         }
         return ok;
     }

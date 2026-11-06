@@ -16,7 +16,6 @@ public class MembRepository {
                 rs.getInt("idMemb"),
                 rs.getString("nombre"),
                 rs.getDouble("precio"),
-                rs.getInt("duracion_mes"),
                 rs.getString("descripcion"),
                 rs.getBoolean("estado")
         );
@@ -28,7 +27,7 @@ public class MembRepository {
         if (conexion == null) {
             return lista;
         }
-        String sql = "SELECT idMemb, nombre, precio, duracion_mes, descripcion, estado FROM membresia WHERE estado = 1";
+        String sql = "SELECT idMemb, nombre, precio, descripcion, estado FROM membresia";
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
@@ -50,15 +49,14 @@ public class MembRepository {
             return false;
         }
 
-        String sql = "INSERT INTO membresia (nombre, precio, duracion_mes, descripcion, estado) "
-                + "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO membresia (nombre, precio, descripcion, estado) "
+                + "VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, membresia.getNombre());
             stmt.setDouble(2, membresia.precio());
-            stmt.setInt(3, membresia.getDuracionmes());
-            stmt.setString(4, membresia.getDescripcion());
-            stmt.setBoolean(5, membresia.getEstado());
+            stmt.setString(3, membresia.getDescripcion());
+            stmt.setBoolean(4, membresia.getEstado());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -74,17 +72,16 @@ public class MembRepository {
         if (conexion == null) {
             return false;
         }
-        String sql = "UPDATE membresia SET nombre = ?, precio = ?, duracion_mes = ?, "
+        String sql = "UPDATE membresia SET nombre = ?, precio = ?, "
                 + "descripcion = ?, estado = ? WHERE idMemb = ?";
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
 
             stmt.setString(1, membresia.getNombre());
             stmt.setDouble(2, membresia.precio());
-            stmt.setInt(3, membresia.getDuracionmes());
-            stmt.setString(4, membresia.getDescripcion());
-            stmt.setBoolean(5, membresia.getEstado());
-            stmt.setInt(6, membresia.getIdMemb());
+            stmt.setString(3, membresia.getDescripcion());
+            stmt.setBoolean(4, membresia.getEstado());
+            stmt.setInt(5, membresia.getIdMemb());
 
             return stmt.executeUpdate() > 0;
 
@@ -102,7 +99,7 @@ public class MembRepository {
             return false;
         }
 
-        String sql = "UPDATE membresia SET estado = 0 WHERE idMemb = ? AND estado = 1";
+        String sql = "UPDATE membresia SET estado = 0 WHERE idMemb = ?";
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setInt(1, idMemb);
@@ -120,7 +117,7 @@ public class MembRepository {
         if (conexion == null) {
             return null;
         }
-        String sql = "SELECT idMemb, nombre, precio, duracion_mes, descripcion, estado "
+        String sql = "SELECT idMemb, nombre, precio, descripcion, estado "
                 + "FROM membresia WHERE idMemb = ?";
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {

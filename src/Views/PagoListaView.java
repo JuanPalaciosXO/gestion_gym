@@ -172,17 +172,22 @@ public class PagoListaView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Primero selecciona un pago de la tabla.");
             return;
         }
+        Pago actual = pagoController.consultarPorId(id);
+        if (actual != null && !actual.isEstado()) {
+            JOptionPane.showMessageDialog(this, "Ese pago ya está anulado.");
+            return;
+        }
         int confirmacion = JOptionPane.showConfirmDialog(this,
-                "¿Seguro que quieres eliminar este pago? Un pago registrado normalmente se anula (Editar) en lugar de borrarse.",
-                "Confirmar eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                "¿Seguro que quieres anular este pago?\nQuedará registrado como Anulado; no se borra.",
+                "Confirmar anulación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (confirmacion != JOptionPane.YES_OPTION) {
             return;
         }
         if (pagoController.Eliminar(id)) {
-            JOptionPane.showMessageDialog(this, "Pago eliminado correctamente.");
+            JOptionPane.showMessageDialog(this, "Pago anulado correctamente.");
             cargarPagos();
         } else {
-            JOptionPane.showMessageDialog(this, "No se pudo eliminar el pago.");
+            JOptionPane.showMessageDialog(this, "No se pudo anular el pago.");
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 

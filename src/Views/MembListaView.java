@@ -24,7 +24,7 @@ public class MembListaView extends javax.swing.JFrame {
         modelo.setRowCount(0);
         for (Membresia m : membController.Listar()) {
             modelo.addRow(new Object[]{
-                m.getIdMemb(), m.getNombre(), m.precio(), m.getDuracionmes(),
+                m.getIdMemb(), m.getNombre(), m.precio(),
                 m.getDescripcion(), m.getEstado() ? "Activa" : "Inactiva"
             });
         }
@@ -64,7 +64,7 @@ public class MembListaView extends javax.swing.JFrame {
                 {null, null, null, null, null}
             },
             new String [] {
-                "Id", "Nombre", "Precio", "Duración", "Descripción"
+                "Id", "Nombre", "Precio", "Descripción", "Estado"
             }
         ));
         jScrollPane1.setViewportView(tblMembresias);
@@ -146,24 +146,28 @@ public class MembListaView extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-
+        
         int id = idSeleccionado();
         if (id == -1) {
             JOptionPane.showMessageDialog(this, "Primero selecciona una membresía de la tabla.");
             return;
         }
+        Membresia actual = membController.consultarPorId(id);
+        if (actual != null && !actual.getEstado()) {
+            JOptionPane.showMessageDialog(this, "Esa membresía ya está inactiva.");
+            return;
+        }
         int confirmacion = JOptionPane.showConfirmDialog(this,
-                "¿Seguro que quieres eliminar esta membresía?",
-                "Confirmar eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                "¿Seguro que quieres inactivar esta membresía?\nDejará de ofrecerse para nuevos pagos, pero se conservan los pagos ya registrados.",
+                "Confirmar inactivación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (confirmacion != JOptionPane.YES_OPTION) {
             return;
         }
         if (membController.Eliminar(id)) {
-            JOptionPane.showMessageDialog(this, "Membresía eliminada correctamente.");
+            JOptionPane.showMessageDialog(this, "Membresía inactivada correctamente.");
             cargarMembresias();
         } else {
-            JOptionPane.showMessageDialog(this,
-                    "No se pudo eliminar. Si ya tiene pagos asociados, usa Editar y desmarca \"Activa\".");
+            JOptionPane.showMessageDialog(this, "No se pudo inactivar la membresía.");
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 

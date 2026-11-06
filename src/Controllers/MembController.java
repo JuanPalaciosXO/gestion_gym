@@ -12,8 +12,8 @@ public class MembController {
         this.service = new MembresiaService();
     }
     
-    public boolean Guardar(int idMemb, String nombre, double precio, int duracionMes, String descripcion, boolean estado){
-        Membresia membresia = new Membresia(idMemb, nombre, precio, duracionMes, descripcion, estado);
+    public boolean Guardar(int idMemb, String nombre, double precio, String descripcion, boolean estado){
+        Membresia membresia = new Membresia(idMemb, nombre, precio, descripcion, estado);
         return this.service.Guardar(membresia);
     }
     

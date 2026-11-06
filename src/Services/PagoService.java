@@ -93,13 +93,18 @@ public class PagoService {
             System.out.println("No se pudo eliminar el pago: el id debe ser mayor que 0");
             return false;
         }
-        if (this.repository.ConsultarPorId(idPago) == null) {
-            System.out.println("No se pudo eliminar el pago: no existe ese id");
+        Pago existente = this.repository.ConsultarPorId(idPago);
+        if (existente == null) {
+            System.out.println("No se pudo anular el pago: no existe ese id");
+            return false;
+        }
+        if (!existente.isEstado()) {
+            System.out.println("El pago ya está anulado");
             return false;
         }
         boolean ok = this.repository.Eliminar(idPago);
         if (ok) {
-            System.out.println("Se elimino correctamente");
+            System.out.println("El pago se ha anulado exitosamente");
         }
         return ok;
     }

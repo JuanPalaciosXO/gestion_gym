@@ -107,7 +107,7 @@ public class PagoRepository {
             return false;
         }
 
-        String sql = "UPDATE pago SET estado = 0 WHERE idPago = ? AND estado = 1";
+        String sql = "UPDATE pago SET estado = 0 WHERE idPago = ?";
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setInt(1, idPago);

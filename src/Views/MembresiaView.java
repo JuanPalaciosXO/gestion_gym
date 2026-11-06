@@ -11,6 +11,14 @@ public class MembresiaView extends javax.swing.JFrame {
     private final MembController membController = new MembController();
     private final Membresia membresiaEditar;    
     private final Runnable alGuardar;
+    
+    private static final java.util.Map<String, Integer> TIPOS = new java.util.LinkedHashMap<>();
+    static {
+        TIPOS.put("Mensual", 1);
+        TIPOS.put("Trimestral", 3);
+        TIPOS.put("Semestral", 6);
+        TIPOS.put("Anual", 12);
+    }
 
     public MembresiaView() {
         this(null, null);
@@ -23,17 +31,44 @@ public class MembresiaView extends javax.swing.JFrame {
         setSize(741, 439);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        cargarTipos();
 
         if (membresia == null) {
             setTitle("Registrar membresía");
+            jLabel1.setText("Registrar Membresía");
             chkEstado.setSelected(true);
+            chkEstado.setVisible(false);
+            if (cmbNombre.getItemCount() == 0) {
+                btnGuardar.setEnabled(false);
+                JOptionPane.showMessageDialog(this,
+                        "Ya existen todos los tipos de membresía. Usa Editar para modificar alguno.");
+            }
         } else {
             setTitle("Editar membresía");
-            txtNombre.setText(membresia.getNombre());
+            jLabel1.setText("Editar Membresía");
+            cmbNombre.setSelectedItem(membresia.getNombre());
             txtPrecio.setText(String.valueOf(membresia.precio()));
-            txtDuracion.setText(String.valueOf(membresia.getDuracionmes()));
             txtDescripcion.setText(membresia.getDescripcion() == null ? "" : membresia.getDescripcion());
             chkEstado.setSelected(membresia.getEstado());
+        }
+    }
+    
+    private void cargarTipos() {
+        java.util.List<String> usados = new java.util.ArrayList<>();
+        for (Membresia m : membController.Listar()) {
+            boolean esLaMisma = membresiaEditar != null && m.getIdMemb() == membresiaEditar.getIdMemb();
+            if (!esLaMisma) {
+                usados.add(m.getNombre().trim().toLowerCase());
+            }
+        }
+        cmbNombre.removeAllItems();
+        for (String tipo : TIPOS.keySet()) {
+            if (!usados.contains(tipo.toLowerCase())) {
+                cmbNombre.addItem(tipo);
+            }
+        }
+        if (membresiaEditar != null && !TIPOS.containsKey(membresiaEditar.getNombre())) {
+            cmbNombre.addItem(membresiaEditar.getNombre());
         }
     }
 
@@ -43,16 +78,14 @@ public class MembresiaView extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         lblNombre = new javax.swing.JLabel();
-        txtNombre = new javax.swing.JTextField();
         lblPrecio = new javax.swing.JLabel();
         txtPrecio = new javax.swing.JTextField();
-        lblDuracion = new javax.swing.JLabel();
-        txtDuracion = new javax.swing.JTextField();
         lblDescripcion = new javax.swing.JLabel();
         txtDescripcion = new javax.swing.JTextField();
         btnGuardar = new javax.swing.JButton();
         chkEstado = new javax.swing.JCheckBox();
         btnVolver = new javax.swing.JButton();
+        cmbNombre = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -64,9 +97,6 @@ public class MembresiaView extends javax.swing.JFrame {
 
         lblPrecio.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblPrecio.setText("Precio");
-
-        lblDuracion.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        lblDuracion.setText("Duración");
 
         lblDescripcion.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblDescripcion.setText("Descripción");
@@ -80,9 +110,13 @@ public class MembresiaView extends javax.swing.JFrame {
         chkEstado.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         chkEstado.setSelected(true);
         chkEstado.setText("Activo");
+        chkEstado.addActionListener(this::chkEstadoActionPerformed);
 
         btnVolver.setText("Volver");
         btnVolver.addActionListener(this::btnVolverActionPerformed);
+
+        cmbNombre.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbNombre.addActionListener(this::cmbNombreActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -92,14 +126,12 @@ public class MembresiaView extends javax.swing.JFrame {
                 .addGap(52, 52, 52)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lblNombre)
-                            .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblPrecio)
-                            .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblDuracion)
-                            .addComponent(txtDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 141, Short.MAX_VALUE)
+                            .addComponent(txtPrecio, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
+                            .addComponent(cmbNombre, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -118,9 +150,9 @@ public class MembresiaView extends javax.swing.JFrame {
                         .addGap(138, 138, 138)
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(273, 273, 273)
+                        .addGap(288, 288, 288)
                         .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(270, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,24 +166,20 @@ public class MembresiaView extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblNombre)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(cmbNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lblPrecio)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(lblDuracion)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblDescripcion)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtDescripcion)))
+                        .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(chkEstado)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                 .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(60, Short.MAX_VALUE))
+                .addGap(51, 51, 51))
         );
 
         pack();
@@ -159,22 +187,25 @@ public class MembresiaView extends javax.swing.JFrame {
 
     
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-
+ 
         try {
-            String nombre = txtNombre.getText().trim();
+            String nombre = (String) cmbNombre.getSelectedItem();
+            if (nombre == null) {
+                JOptionPane.showMessageDialog(this, "Selecciona el tipo de membresía.");
+                return;
+            }
             double precio = Double.parseDouble(txtPrecio.getText().trim());
-            int duracion = Integer.parseInt(txtDuracion.getText().trim());
             String descripcion = txtDescripcion.getText().trim();
             boolean estado = chkEstado.isSelected();
-
+ 
             boolean ok;
             if (membresiaEditar == null) {
-                ok = membController.Guardar(0, nombre, precio, duracion, descripcion, estado);
+                ok = membController.Guardar(0, nombre, precio, descripcion, estado);
             } else {
                 ok = membController.Actualizar(new Membresia(
-                        membresiaEditar.getIdMemb(), nombre, precio, duracion, descripcion, estado));
+                        membresiaEditar.getIdMemb(), nombre, precio, descripcion, estado));
             }
-
+ 
             if (ok) {
                 JOptionPane.showMessageDialog(this, membresiaEditar == null
                         ? "Membresía registrada correctamente."
@@ -185,19 +216,28 @@ public class MembresiaView extends javax.swing.JFrame {
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this,
-                        "No se pudo guardar. Revisa que el nombre no esté repetido y que el precio y la duración sean mayores que 0.",
+                        "No se pudo guardar. Revisa que ya no exista una membresía de ese tipo y que el precio sea mayor que 0.",
                         "Validación", JOptionPane.WARNING_MESSAGE);
             }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this,
-                    "El precio y la duración deben ser números.",
+                    "El precio debe ser un número.",
                     "Datos inválidos", JOptionPane.WARNING_MESSAGE);
         }
+                      
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
         dispose();
     }//GEN-LAST:event_btnVolverActionPerformed
+
+    private void cmbNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbNombreActionPerformed
+
+    }//GEN-LAST:event_cmbNombreActionPerformed
+
+    private void chkEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkEstadoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_chkEstadoActionPerformed
 
     public static void main(String args[]) {
       
@@ -224,14 +264,12 @@ public class MembresiaView extends javax.swing.JFrame {
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnVolver;
     private javax.swing.JCheckBox chkEstado;
+    private javax.swing.JComboBox<String> cmbNombre;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblDescripcion;
-    private javax.swing.JLabel lblDuracion;
     private javax.swing.JLabel lblNombre;
     private javax.swing.JLabel lblPrecio;
     private javax.swing.JTextField txtDescripcion;
-    private javax.swing.JTextField txtDuracion;
-    private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtPrecio;
     // End of variables declaration//GEN-END:variables
 }
