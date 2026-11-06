@@ -80,6 +80,224 @@ public class UsuarioView extends javax.swing.JFrame {
         }
     }
 
+    private void calcularEdadUsuario() {
+        if (idUsuarioSeleccionado == 0) {
+            JOptionPane.showMessageDialog(this, "Primero selecciona un usuario de la tabla.");
+            return;
+        }
+
+        try {
+            String fechaTexto = txtFechaNacimiento.getText().trim();
+
+            if (fechaTexto.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "El usuario no tiene fecha de nacimiento registrada.");
+                return;
+            }
+
+            LocalDate nacimiento = LocalDate.parse(fechaTexto);
+            LocalDate hoy = LocalDate.now();
+
+            if (nacimiento.isAfter(hoy)) {
+                JOptionPane.showMessageDialog(this, "La fecha de nacimiento no puede ser futura.");
+                return;
+            }
+
+            int edad = java.time.Period.between(nacimiento, hoy).getYears();
+
+            JOptionPane.showMessageDialog(this,
+                    "Edad del usuario: " + edad + " años");
+        } catch (java.time.format.DateTimeParseException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "La fecha debe tener el formato AAAA-MM-DD.");
+        }
+    }
+
+    private void verificarMembresiaUsuario() {
+        if (idUsuarioSeleccionado == 0) {
+            JOptionPane.showMessageDialog(this, "Primero selecciona un usuario.");
+            return;
+        }
+
+        String sql = "SELECT p.fecha, m.nombre, m.duracion_mes "
+                + "FROM pago p "
+                + "INNER JOIN membresia m ON p.idMemb = m.idMemb "
+                + "WHERE p.idUsuario = ? AND p.estado = 1 "
+                + "ORDER BY p.fecha DESC, p.idPago DESC LIMIT 1";
+
+        java.sql.Connection conexion = DB.Database.conectar();
+
+        if (conexion == null) {
+            JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
+            return;
+        }
+
+        try (java.sql.PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setInt(1, idUsuarioSeleccionado);
+
+            try (java.sql.ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String nombre = rs.getString("nombre");
+                    LocalDate inicio = rs.getDate("fecha").toLocalDate();
+                    int meses = rs.getInt("duracion_mes");
+
+                    LocalDate vencimiento = inicio.plusMonths(meses);
+                    boolean vigente = LocalDate.now().isBefore(vencimiento);
+
+                    JOptionPane.showMessageDialog(this,
+                            "Membresía: " + nombre
+                            + "\nFecha de inicio: " + inicio
+                            + "\nFecha de vencimiento: " + vencimiento
+                            + "\nEstado: " + (vigente ? "VIGENTE" : "VENCIDA"));
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "El usuario no tiene pagos de membresía registrados.");
+                }
+            }
+        } catch (java.sql.SQLException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al verificar membresía: " + ex.getMessage());
+        } finally {
+            DB.Database.desconectar(conexion);
+        }
+    }
+
+    private void calcularDiasRestantes() {
+        if (idUsuarioSeleccionado == 0) {
+            JOptionPane.showMessageDialog(this, "Primero selecciona un usuario.");
+            return;
+        }
+
+        String sql = "SELECT p.fecha, m.nombre, m.duracion_mes "
+                + "FROM pago p "
+                + "INNER JOIN membresia m ON p.idMemb = m.idMemb "
+                + "WHERE p.idUsuario = ? AND p.estado = 1 "
+                + "ORDER BY p.fecha DESC, p.idPago DESC LIMIT 1";
+
+        java.sql.Connection conexion = DB.Database.conectar();
+
+        if (conexion == null) {
+            JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
+            return;
+        }
+
+        try (java.sql.PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setInt(1, idUsuarioSeleccionado);
+
+            try (java.sql.ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String nombre = rs.getString("nombre");
+                    LocalDate inicio = rs.getDate("fecha").toLocalDate();
+                    int meses = rs.getInt("duracion_mes");
+
+                    LocalDate vencimiento = inicio.plusMonths(meses);
+
+                    long dias = java.time.temporal.ChronoUnit.DAYS.between(
+                            LocalDate.now(), vencimiento
+                    );
+
+                    String mensaje;
+
+                    if (dias > 0) {
+                        mensaje = "Le quedan " + dias + " días de membresía.";
+                    } else if (dias == 0) {
+                        mensaje = "La membresía vence hoy.";
+                    } else {
+                        mensaje = "La membresía venció hace " + Math.abs(dias) + " días.";
+                    }
+
+                    JOptionPane.showMessageDialog(this,
+                            "Membresía: " + nombre
+                            + "\nVencimiento: " + vencimiento
+                            + "\n" + mensaje);
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "El usuario no tiene pagos de membresía registrados.");
+                }
+            }
+        } catch (java.sql.SQLException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al calcular días restantes: " + ex.getMessage());
+        } finally {
+            DB.Database.desconectar(conexion);
+        }
+    }
+
+    private void alertaVencimientoMembresia() {
+        if (idUsuarioSeleccionado == 0) {
+            JOptionPane.showMessageDialog(this, "Primero selecciona un usuario.");
+            return;
+        }
+
+        String sql = "SELECT p.fecha, m.nombre, m.duracion_mes "
+                + "FROM pago p "
+                + "INNER JOIN membresia m ON p.idMemb = m.idMemb "
+                + "WHERE p.idUsuario = ? AND p.estado = 1 "
+                + "ORDER BY p.fecha DESC, p.idPago DESC LIMIT 1";
+
+        java.sql.Connection conexion = DB.Database.conectar();
+
+        if (conexion == null) {
+            JOptionPane.showMessageDialog(this, "No se pudo conectar a la base de datos.");
+            return;
+        }
+
+        try (java.sql.PreparedStatement stmt = conexion.prepareStatement(sql)) {
+            stmt.setInt(1, idUsuarioSeleccionado);
+
+            try (java.sql.ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String nombre = rs.getString("nombre");
+                    LocalDate inicio = rs.getDate("fecha").toLocalDate();
+                    int meses = rs.getInt("duracion_mes");
+
+                    LocalDate vencimiento = inicio.plusMonths(meses);
+
+                    long dias = java.time.temporal.ChronoUnit.DAYS.between(
+                            LocalDate.now(), vencimiento
+                    );
+
+                    String mensaje;
+                    int tipoMensaje;
+
+                    if (dias < 0) {
+                        mensaje = "ALERTA: La membresía está vencida desde hace "
+                                + Math.abs(dias) + " días.";
+                        tipoMensaje = JOptionPane.ERROR_MESSAGE;
+                    } else if (dias == 0) {
+                        mensaje = "ALERTA: La membresía vence hoy.";
+                        tipoMensaje = JOptionPane.WARNING_MESSAGE;
+                    } else if (dias <= 7) {
+                        mensaje = "ALERTA: La membresía vence en " + dias + " días.";
+                        tipoMensaje = JOptionPane.WARNING_MESSAGE;
+                    } else {
+                        mensaje = "La membresía está vigente. Faltan "
+                                + dias + " días para su vencimiento.";
+                        tipoMensaje = JOptionPane.INFORMATION_MESSAGE;
+                    }
+
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Membresía: " + nombre
+                            + "\nVencimiento: " + vencimiento
+                            + "\n" + mensaje,
+                            "Estado de membresía",
+                            tipoMensaje
+                    );
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "ALERTA: El usuario no tiene pagos de membresía registrados.",
+                            "Sin membresía",
+                            JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        } catch (java.sql.SQLException ex) {
+            JOptionPane.showMessageDialog(this,
+                    "Error al consultar membresía: " + ex.getMessage());
+        } finally {
+            DB.Database.desconectar(conexion);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -110,6 +328,10 @@ public class UsuarioView extends javax.swing.JFrame {
         btnAsignarRutina = new javax.swing.JButton();
         btnVerRutinas = new javax.swing.JButton();
         btnQuitarRutina = new javax.swing.JButton();
+        btnCalcularEdad = new javax.swing.JButton();
+        btnVerificarMembresia = new javax.swing.JButton();
+        btnDiasRestantes = new javax.swing.JButton();
+        btnAlertaVencimiento = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -129,6 +351,8 @@ public class UsuarioView extends javax.swing.JFrame {
 
         lblCorreo.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblCorreo.setText("Correo");
+
+        txtCorreo.addActionListener(this::txtCorreoActionPerformed);
 
         lblFechaNacimiento.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lblFechaNacimiento.setText("Fecha de nacimiento");
@@ -188,57 +412,77 @@ public class UsuarioView extends javax.swing.JFrame {
         btnQuitarRutina.setText("Quitar rutina");
         btnQuitarRutina.addActionListener(this::btnQuitarRutinaActionPerformed);
 
+        btnCalcularEdad.setText("Calcular edad");
+        btnCalcularEdad.addActionListener(this::btnCalcularEdadActionPerformed);
+
+        btnVerificarMembresia.setText("Verificar membresía");
+        btnVerificarMembresia.addActionListener(this::btnVerificarMembresiaActionPerformed);
+
+        btnDiasRestantes.setText("Días restantes");
+        btnDiasRestantes.addActionListener(this::btnDiasRestantesActionPerformed);
+
+        btnAlertaVencimiento.setText("Alerta vencimiento");
+        btnAlertaVencimiento.addActionListener(this::btnAlertaVencimientoActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnGuardar)
+                .addGap(18, 18, 18)
+                .addComponent(btnActualizar)
+                .addGap(18, 18, 18)
+                .addComponent(btnEliminar)
+                .addGap(18, 18, 18)
+                .addComponent(btnLimpiar)
+                .addGap(18, 18, 18)
+                .addComponent(btnVolver)
+                .addGap(201, 201, 201))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(282, 282, 282)
-                        .addComponent(lblTitulo))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(29, 29, 29)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(chkEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 685, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblRutina)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(cmbRutina, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(lblNombre, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtNombre, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-                                    .addComponent(lblTelefono, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblFechaNacimiento, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtTelefono, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.Alignment.LEADING))
-                                .addGap(18, 18, 18)
+                                .addComponent(btnAsignarRutina)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnVerRutinas)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnQuitarRutina)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnCalcularEdad)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnVerificarMembresia)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnDiasRestantes)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnAlertaVencimiento))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(lblNombre)
+                                    .addComponent(lblTelefono)
+                                    .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
+                                    .addComponent(txtTelefono)
+                                    .addComponent(lblRutina)
+                                    .addComponent(cmbRutina, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(lblFechaNacimiento)
+                                    .addComponent(txtFechaNacimiento))
+                                .addGap(44, 44, 44)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(lblPassword)
-                                        .addComponent(lblCorreo)
-                                        .addComponent(txtPassword)
-                                        .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(txtPassword)
+                                    .addComponent(lblPassword)
+                                    .addComponent(txtDocumento)
                                     .addComponent(lblDocumento)
-                                    .addComponent(txtDocumento, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(btnAsignarRutina)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(btnVerRutinas)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(btnQuitarRutina))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(113, 113, 113)
-                                .addComponent(btnGuardar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnActualizar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnEliminar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnLimpiar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnVolver)))))
-                .addContainerGap(27, Short.MAX_VALUE))
+                                    .addComponent(txtCorreo)
+                                    .addComponent(lblCorreo)))
+                            .addComponent(jScrollPane1)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(350, 350, 350)
+                        .addComponent(lblTitulo)))
+                .addContainerGap(28, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -246,50 +490,56 @@ public class UsuarioView extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(lblTitulo)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblNombre)
-                    .addComponent(lblDocumento))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
-                    .addComponent(txtDocumento))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblCorreo)
-                    .addComponent(lblTelefono))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtTelefono)
-                    .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblFechaNacimiento)
-                    .addComponent(lblPassword))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblNombre)
+                            .addComponent(lblDocumento))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtNombre, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
+                            .addComponent(txtDocumento))
+                        .addGap(18, 18, 18)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblCorreo)
+                            .addComponent(lblTelefono))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtCorreo, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
+                            .addComponent(txtTelefono))
+                        .addGap(18, 18, 18)
+                        .addComponent(lblFechaNacimiento)
+                        .addGap(8, 8, 8)
+                        .addComponent(txtFechaNacimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblPassword)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(lblRutina)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnQuitarRutina, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
-                    .addComponent(btnAsignarRutina, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cmbRutina)
-                    .addComponent(btnVerRutinas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addComponent(cmbRutina, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAsignarRutina, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnVerRutinas, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnQuitarRutina, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCalcularEdad, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnVerificarMembresia, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDiasRestantes, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAlertaVencimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(chkEstado)
                 .addGap(14, 14, 14)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnGuardar)
-                        .addComponent(btnActualizar)
-                        .addComponent(btnEliminar)
-                        .addComponent(btnLimpiar)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnGuardar)
+                    .addComponent(btnActualizar)
+                    .addComponent(btnEliminar)
+                    .addComponent(btnLimpiar)
+                    .addComponent(btnVolver, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         pack();
@@ -728,18 +978,42 @@ public class UsuarioView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnQuitarRutinaActionPerformed
 
+    private void btnCalcularEdadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcularEdadActionPerformed
+        calcularEdadUsuario();
+    }//GEN-LAST:event_btnCalcularEdadActionPerformed
+
+    private void btnVerificarMembresiaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerificarMembresiaActionPerformed
+        verificarMembresiaUsuario();
+    }//GEN-LAST:event_btnVerificarMembresiaActionPerformed
+
+    private void btnDiasRestantesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiasRestantesActionPerformed
+        calcularDiasRestantes();
+    }//GEN-LAST:event_btnDiasRestantesActionPerformed
+
+    private void txtCorreoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCorreoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCorreoActionPerformed
+
+    private void btnAlertaVencimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlertaVencimientoActionPerformed
+        alertaVencimientoMembresia();
+    }//GEN-LAST:event_btnAlertaVencimientoActionPerformed
+
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(() -> new UsuarioView().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnAlertaVencimiento;
     private javax.swing.JButton btnAsignarRutina;
+    private javax.swing.JButton btnCalcularEdad;
+    private javax.swing.JButton btnDiasRestantes;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnQuitarRutina;
     private javax.swing.JButton btnVerRutinas;
+    private javax.swing.JButton btnVerificarMembresia;
     private javax.swing.JButton btnVolver;
     private javax.swing.JCheckBox chkEstado;
     private javax.swing.JComboBox<String> cmbRutina;
