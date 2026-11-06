@@ -5,6 +5,7 @@ import Controllers.PagoController;
 import Controllers.UsuarioController;
 import Models.Membresia;
 import Models.Pago;
+import Models.PagoSuplemento;
 import Models.Usuario;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -26,6 +27,7 @@ public class PagoView extends javax.swing.JFrame {
 
     private final List<Usuario> usuarios = new ArrayList<>();
     private final List<Membresia> membresias = new ArrayList<>();
+    private List<PagoSuplemento> suplementos = new ArrayList<>();
 
     public PagoView() {
         this(null, null);
@@ -54,9 +56,55 @@ public class PagoView extends javax.swing.JFrame {
             txtValor.setText(String.valueOf(pago.getValor()));
             cmbMetodo.setSelectedItem(pago.getMetodoPago());
             chkEstado.setSelected(pago.isEstado());
+            
+            suplementos = pagoController.ListarSuplementos(pago.getIdPago());
+            btnSuplementos.setText("Ver suplementos");
+            actualizarResumen();
+            chkEstado.setEnabled(false);
+        }
+        txtValor.setEditable(false);
+        cmbMembresia.addActionListener(e -> recalcularValor());
+    }
+    
+    private void abrirSuplementos() {
+        boolean soloLectura = pagoEditar != null;
+        SuplementosPagoDialog dialogo = new SuplementosPagoDialog(this, suplementos, soloLectura);
+        dialogo.setVisible(true);
+        if (!soloLectura && dialogo.getResultado() != null) {
+            suplementos = dialogo.getResultado();
+            actualizarResumen();
+            recalcularValor();
         }
     }
+    
+    private void actualizarResumen() {
+        if (suplementos.isEmpty()) {
+            lblResumenSuple.setText("Sin suplementos");
+            return;
+        }
+        int unidades = 0;
+        double total = 0;
+        for (PagoSuplemento ps : suplementos) {
+            unidades += ps.getCantidad();
+            total += ps.getSubtotal();
+        }
+        lblResumenSuple.setText(suplementos.size() + " suplemento(s), " + unidades
+                + " unidad(es) - $" + java.text.NumberFormat.getIntegerInstance(
+                        java.util.Locale.forLanguageTag("es-CO")).format(total));
+    }
 
+    private void recalcularValor() {
+        if (pagoEditar != null) {
+            return;
+        }
+        int i = cmbMembresia.getSelectedIndex();
+        double total = (i >= 0 && i < membresias.size()) ? membresias.get(i).precio() : 0;
+        for (PagoSuplemento ps : suplementos) {
+            total += ps.getSubtotal();
+        }
+        txtValor.setText(String.valueOf(Math.round(total)));
+    }
+    
     private void cargarUsuarios() {
         cmbUsuario.removeAllItems();
         usuarios.clear();
@@ -105,6 +153,8 @@ public class PagoView extends javax.swing.JFrame {
         chkEstado = new javax.swing.JCheckBox();
         btnGuardar = new javax.swing.JButton();
         btnVolver = new javax.swing.JButton();
+        btnSuplementos = new javax.swing.JButton();
+        lblResumenSuple = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -146,6 +196,11 @@ public class PagoView extends javax.swing.JFrame {
         btnVolver.setText("Volver");
         btnVolver.addActionListener(this::btnVolverActionPerformed);
 
+        btnSuplementos.setText("Agregar Suplementos");
+        btnSuplementos.addActionListener(this::btnSuplementosActionPerformed);
+
+        lblResumenSuple.setText("Sin suplementos");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -163,9 +218,18 @@ public class PagoView extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(17, 17, 17)
                                 .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(lblDuracion1)
-                        .addGap(236, 236, 236))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(lblDuracion1))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(11, 11, 11)
+                                .addComponent(chkEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(11, 11, 11)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(lblResumenSuple, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnSuplementos, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)))))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lblDuracion)
@@ -176,10 +240,9 @@ public class PagoView extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lblPrecio1)
-                            .addComponent(chkEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtValor)
-                            .addComponent(cmbMetodo, 0, 170, Short.MAX_VALUE))
-                        .addGap(104, 104, 104))))
+                            .addComponent(cmbMetodo, 0, 170, Short.MAX_VALUE))))
+                .addGap(104, 104, 104))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,7 +264,7 @@ public class PagoView extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(cmbUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE))
+                                        .addComponent(cmbUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(12, 12, 12)
                                         .addComponent(txtValor)))
@@ -214,15 +277,23 @@ public class PagoView extends javax.swing.JFrame {
                         .addComponent(lblPrecio1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(cmbMetodo, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(24, 24, 24)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(chkEstado))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
-                .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(lblDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(29, 29, 29)
+                        .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(36, 36, 36))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(lblResumenSuple)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnSuplementos, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(chkEstado)
+                        .addGap(70, 70, 70))))
         );
 
         pack();
@@ -247,7 +318,7 @@ public class PagoView extends javax.swing.JFrame {
 
             boolean ok;
             if (pagoEditar == null) {
-                ok = pagoController.Guardar(0, fecha, valor, metodo, estado, idUsuario, idMembresia);
+                ok = pagoController.Guardar(0, fecha, valor, metodo, estado, idUsuario, idMembresia, suplementos);
             } else {
                 ok = pagoController.Actualizar(new Pago(
                         pagoEditar.getIdPago(), fecha, valor, metodo, estado, idUsuario, idMembresia));
@@ -262,8 +333,10 @@ public class PagoView extends javax.swing.JFrame {
                 }
                 dispose();
             } else {
+                String motivo = pagoController.getUltimoError();
                 JOptionPane.showMessageDialog(this,
-                        "No se pudo guardar. Revisa que la fecha no sea futura y que el valor sea mayor que 0.",
+                        motivo != null ? motivo
+                                : "No se pudo guardar. Revisa que la fecha no sea futura y que el valor sea mayor que 0.",
                         "Validación", JOptionPane.WARNING_MESSAGE);
             }
         } catch (DateTimeParseException ex) {
@@ -282,8 +355,12 @@ public class PagoView extends javax.swing.JFrame {
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void txtFechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFechaActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_txtFechaActionPerformed
+
+    private void btnSuplementosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuplementosActionPerformed
+        abrirSuplementos();
+    }//GEN-LAST:event_btnSuplementosActionPerformed
 
     public static void main(String args[]) {
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -307,6 +384,7 @@ public class PagoView extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnSuplementos;
     private javax.swing.JButton btnVolver;
     private javax.swing.JCheckBox chkEstado;
     private javax.swing.JComboBox<String> cmbMembresia;
@@ -318,6 +396,7 @@ public class PagoView extends javax.swing.JFrame {
     private javax.swing.JLabel lblNombre;
     private javax.swing.JLabel lblPrecio;
     private javax.swing.JLabel lblPrecio1;
+    private javax.swing.JLabel lblResumenSuple;
     private javax.swing.JTextField txtFecha;
     private javax.swing.JTextField txtValor;
     // End of variables declaration//GEN-END:variables

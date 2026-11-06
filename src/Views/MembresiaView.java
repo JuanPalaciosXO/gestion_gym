@@ -54,23 +54,16 @@ public class MembresiaView extends javax.swing.JFrame {
     }
     
     private void cargarTipos() {
-        java.util.List<String> usados = new java.util.ArrayList<>();
-        for (Membresia m : membController.Listar()) {
-            boolean esLaMisma = membresiaEditar != null && m.getIdMemb() == membresiaEditar.getIdMemb();
-            if (!esLaMisma) {
-                usados.add(m.getNombre().trim().toLowerCase());
-            }
-        }
-        cmbNombre.removeAllItems();
-        for (String tipo : TIPOS.keySet()) {
-            if (!usados.contains(tipo.toLowerCase())) {
-                cmbNombre.addItem(tipo);
-            }
-        }
-        if (membresiaEditar != null && !TIPOS.containsKey(membresiaEditar.getNombre())) {
-            cmbNombre.addItem(membresiaEditar.getNombre());
-        }
+    cmbNombre.removeAllItems();
+
+    for (String tipo : TIPOS.keySet()) {
+        cmbNombre.addItem(tipo);
     }
+
+    if (membresiaEditar != null) {
+        cmbNombre.setSelectedItem(membresiaEditar.getNombre());
+    }
+}
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
